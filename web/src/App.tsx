@@ -24,7 +24,7 @@ export function App() {
   let view = <div className="empty">{meta instanceof Error ? `読み込めませんでした: ${meta.message}` : "読み込み中…"}</div>;
   if (ready) {
     if (head === "event") view = <EventView id={arg} meta={meta} />;
-    else if (head === "type") view = <TypeView kind={arg} meta={meta} />;
+    else if (head === "type") view = <TypeView key={arg} kind={arg} meta={meta} />;
     else if (head === "market") view = <MarketView id={arg} meta={meta} />;
     else if (head === "wiki" && arg) view = <WikiPageView path={arg} meta={meta} />;
     else if (head === "wiki") view = <WikiHome />;
@@ -46,7 +46,7 @@ export function App() {
       </header>
       <main>{view}</main>
       <footer>
-        価格データは Yahoo Finance、FOMC は FRB、日銀会合は日本銀行、ECB 理事会は ECB、BoE 金融政策委員会はイングランド銀行、CPI・雇用統計は BLS / FRED より。公開しているのは変化率などの派生値のみ。投資助言ではない。
+        価格データは Yahoo Finance、FOMC は FRB、日銀会合は日本銀行、ECB 理事会は ECB、BoE 金融政策委員会はイングランド銀行、日本CPI は総務省統計局、短観は日本銀行、CPI・雇用統計は BLS / FRED より。公開しているのは変化率などの派生値のみ。投資助言ではない。
         {ready && <> · データ更新 {meta.generated_at.slice(0, 10)}</>}
       </footer>
     </>

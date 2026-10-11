@@ -254,6 +254,30 @@ pub fn groups(event: &Event, windows: &[MarketWindow]) -> Vec<(String, String)> 
                 g.push((id.into(), label.into()));
             }
         }
+        "jpcpi" => {
+            if let Some(c) = fact("core_yoy_change").and_then(|f| f.value) {
+                let (id, label) = if c.abs() < 0.05 {
+                    ("core_flat", "コア前年比が前月と同じ")
+                } else if c > 0.0 {
+                    ("core_up", "コア前年比が前月から上昇")
+                } else {
+                    ("core_down", "コア前年比が前月から低下")
+                };
+                g.push((id.into(), label.into()));
+            }
+        }
+        "tankan" => {
+            if let Some(c) = fact("large_mfg_change").and_then(|f| f.value) {
+                let (id, label) = if c == 0.0 {
+                    ("mfg_flat", "大企業製造業DIが横ばい")
+                } else if c > 0.0 {
+                    ("mfg_up", "大企業製造業DIが改善")
+                } else {
+                    ("mfg_down", "大企業製造業DIが悪化")
+                };
+                g.push((id.into(), label.into()));
+            }
+        }
         "nfp" => {
             if let (Some(a), Some(b)) = (
                 fact("unemployment").and_then(|f| f.value),

@@ -233,16 +233,28 @@ export function EventView({ id, meta }: { id: string; meta: Meta }) {
   );
 }
 
+/** The equity index and the rate or currency that each event type is mostly about. */
+const TYPE_KEYS: Record<string, [string, string]> = {
+  boj: ["n225", "usdjpy"],
+  jpcpi: ["n225", "usdjpy"],
+  tankan: ["n225", "usdjpy"],
+  ecb: ["sx5e", "eurusd"],
+  boe: ["ftse", "gbpusd"],
+};
+
 export function TypeView({ kind, meta }: { kind: string; meta: Meta }) {
   const t = useJson<TypeDetail>(`data/types/${kind}.json`);
   const wiki = useWikiIndex();
+  const [eq, rate] = TYPE_KEYS[kind] ?? ["spx", "us10y"];
+  const eqDef = meta.markets.find((x) => x.id === eq)!;
+  const rateDef = meta.markets.find((x) => x.id === rate)!;
   const [group, setGroup] = useState("all");
-  const [market, setMarket] = useState("spx");
+  const [market, setMarket] = useState(eq);
   if (!t || t instanceof Error) return <Loading v={t} />;
   const g = t.groups.find((x) => x.id === group) ?? t.groups[0];
   const m = meta.markets.find((x) => x.id === market)!;
   const page = wiki.find((w) => w.type === "event-type" && w.event_type === kind);
-  const s1 = g.stats.spx?.["1"];
+  const s1 = g.stats[eq]?.["1"];
   return (
     <>
       <div className="eyebrow">Event type</div>
@@ -250,9 +262,9 @@ export function TypeView({ kind, meta }: { kind: string; meta: Meta }) {
       <p className="lead">{t.type.description}{page && <> · <a href={`#/wiki/${page.path}`}>wiki の傾向と記録 →</a></>}</p>
       <div className="grid k4" style={{ marginTop: 20 }}>
         <div className="card kpi"><div className="label">件数（{g.label}）</div><div className="value num">{g.n_events}</div></div>
-        <div className="card kpi"><div className="label">S&P 500 1本目の平均</div><div className="value num">{fmt(s1?.mean, meta.markets.find((x) => x.id === "spx")!)}</div></div>
-        <div className="card kpi"><div className="label">S&P 500 1本目で上昇した割合</div><div className="value num">{s1 ? `${s1.up_share.toFixed(0)}%` : "–"}</div></div>
-        <div className="card kpi"><div className="label">米10年金利 1本目の平均</div><div className="value num">{fmt(g.stats.us10y?.["1"]?.mean, meta.markets.find((x) => x.id === "us10y")!)}</div></div>
+        <div className="card kpi"><div className="label">{eqDef.name} 1本目の平均</div><div className="value num">{fmt(s1?.mean, eqDef)}</div></div>
+        <div className="card kpi"><div className="label">{eqDef.name} 1本目で上昇した割合</div><div className="value num">{s1 ? `${s1.up_share.toFixed(0)}%` : "–"}</div></div>
+        <div className="card kpi"><div className="label">{rateDef.name} 1本目の平均</div><div className="value num">{fmt(g.stats[rate]?.["1"]?.mean, rateDef)}</div></div>
       </div>
       <h2>平均の推移と四分位の幅</h2>
       <div className="filters">
