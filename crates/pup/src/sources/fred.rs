@@ -7,6 +7,8 @@ use serde_json::Value;
 
 pub const RELEASE_CPI: u32 = 10;
 pub const RELEASE_EMPLOYMENT: u32 = 50;
+pub const RELEASE_PPI: u32 = 46;
+pub const RELEASE_JOLTS: u32 = 192;
 
 pub fn release_dates(
     client: &reqwest::blocking::Client,

@@ -334,6 +334,16 @@ pub const EVENT_TYPES: &[EventTypeDef] = &[
         name: "米雇用統計",
         description: "米雇用統計（非農業部門雇用者数・失業率）の公表（BLS）",
     },
+    EventTypeDef {
+        id: "ppi",
+        name: "米PPI",
+        description: "米生産者物価指数（最終需要）の公表（BLS）",
+    },
+    EventTypeDef {
+        id: "jolts",
+        name: "米JOLTS",
+        description: "米求人・離職動態調査（求人件数）の公表（BLS、10:00）",
+    },
 ];
 
 pub fn event_type(id: &str) -> Option<&'static EventTypeDef> {
