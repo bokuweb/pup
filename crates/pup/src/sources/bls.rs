@@ -15,9 +15,29 @@ const UNEMPLOYMENT: &str = "LNS14000000";
 
 type Monthly = BTreeMap<String, BTreeMap<(i32, u32), f64>>;
 
+/// First year fetched: the January 2016 release (December 2015) needs December 2014 for its y/y.
+const FIRST_YEAR: i32 = 2014;
+
+/// v1 serves at most ten years per call (and about 25 calls a day), so the span is split.
 pub fn fetch(client: &reqwest::blocking::Client) -> Result<Monthly> {
     let end = chrono::Utc::now().year();
-    let body = json!({"seriesid": [CPI_ALL, CPI_CORE, PAYROLLS, UNEMPLOYMENT], "startyear": (end - 9).to_string(), "endyear": end.to_string()});
+    let mut out = Monthly::new();
+    let mut to = end;
+    while to >= FIRST_YEAR {
+        let from = (to - 9).max(FIRST_YEAR);
+        fetch_span(client, from, to, &mut out)?;
+        to = from - 1;
+    }
+    Ok(out)
+}
+
+fn fetch_span(
+    client: &reqwest::blocking::Client,
+    from: i32,
+    to: i32,
+    out: &mut Monthly,
+) -> Result<()> {
+    let body = json!({"seriesid": [CPI_ALL, CPI_CORE, PAYROLLS, UNEMPLOYMENT], "startyear": from.to_string(), "endyear": to.to_string()});
     let resp = client
         .post("https://api.bls.gov/publicAPI/v1/timeseries/data/")
         .json(&body)
@@ -27,7 +47,6 @@ pub fn fetch(client: &reqwest::blocking::Client) -> Result<Monthly> {
     if v["status"] != "REQUEST_SUCCEEDED" {
         anyhow::bail!("BLS: {}", v["message"]);
     }
-    let mut out = Monthly::new();
     for s in v["Results"]["series"].as_array().context("series")? {
         let id = s["seriesID"].as_str().unwrap_or_default().to_string();
         let m = out.entry(id).or_default();
@@ -51,11 +70,24 @@ pub fn fetch(client: &reqwest::blocking::Client) -> Result<Monthly> {
             }
         }
     }
-    Ok(out)
+    Ok(())
 }
 
 fn ym(d: NaiveDate) -> (i32, u32) {
     (d.year(), d.month())
+}
+
+/// The month a release covers: the month before, except the Employment Situation releases delayed
+/// by the 2025 shutdown (September's on 20 November; October's and November's together on
+/// 16 December, whose headline is November).
+pub fn reference_month(kind: &str, date: NaiveDate) -> Result<(i32, u32)> {
+    match (kind, date.to_string().as_str()) {
+        ("nfp", "2025-11-20") => Ok((2025, 9)),
+        ("nfp", "2025-12-16") => Ok((2025, 11)),
+        _ => Ok(ym(date
+            .checked_sub_months(Months::new(1))
+            .context("month")?)),
+    }
 }
 
 fn yoy(series: &BTreeMap<(i32, u32), f64>, m: (i32, u32)) -> Option<f64> {
@@ -85,7 +117,7 @@ pub fn events(kind: &str, dates: &[NaiveDate], data: &Monthly) -> Result<Vec<Eve
     let get = |id: &str| data.get(id).unwrap_or(&empty);
     let mut out = Vec::new();
     for &date in dates {
-        let refm = ym(date.checked_sub_months(Months::new(1)).context("month")?);
+        let refm = reference_month(kind, date)?;
         let label = format!("{}年{}月分", refm.0, refm.1);
         let facts = match kind {
             "cpi" => {

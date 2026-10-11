@@ -5,8 +5,8 @@ and how they moved after — as machine-computed facts, charts, and an OKF wiki 
 writes the analysis and every number it writes is checked against those facts.
 
 - **Events**: FOMC decisions, Bank of Japan policy meetings, ECB Governing Council decisions,
-  Bank of England MPC decisions, Japan's national CPI and the BOJ Tankan (all 2016–), US CPI and the
-  US employment report (with a FRED API key).
+  Bank of England MPC decisions, Japan's national CPI, the BOJ Tankan, US CPI and the US employment
+  report (all 2016–).
 - **Markets**: S&P 500, Nasdaq 100, Russell 2000, VIX, Nikkei 225, TOPIX (1306 ETF), DAX, Euro Stoxx 50,
   FTSE 100, Hang Seng, US 10-year yield, USD/JPY, EUR/USD, GBP/USD, dollar index, gold, WTI, bitcoin.
 - **App**: GitHub Pages (`https://bokuweb.github.io/pup/`) — event charts (±20 sessions), averages
@@ -39,7 +39,8 @@ update-data.yml  (daily, JST 07:00)
                                    ECB decisions + key rates (Data Portal), BoE MPC pages + Bank Rate,
                                    Japan CPI summaries (e-Stat) and Tankan summaries (BOJ), read
                                    with pdftotext (poppler-utils) and cached per release,
-                                   FRED release dates + BLS figures (CPI/NFP, only with FRED_API_KEY)
+                                   US CPI/NFP release dates (FRED with FRED_API_KEY, otherwise the
+                                   Internet Archive's index of archived BLS releases) + BLS figures
   pup build     → public/data/     event windows, aggregates, market reactions (JSON)
   pup wiki-export → public/wiki/   wiki branch → JSON
   web (Vite)    → Pages
@@ -63,8 +64,8 @@ sign. Computing new numbers (differences, ratios) is not allowed. One failure bl
 1. **Pages**: Settings → Pages → Source: *GitHub Actions*.
 2. **Secrets**
    - `CLAUDE_CODE_OAUTH_TOKEN` (`claude setup-token`, runs on a Pro/Max plan) or `ANTHROPIC_API_KEY`.
-   - `FRED_API_KEY` (optional, free at <https://fred.stlouisfed.org/docs/api/api_key.html>) to add
-     US CPI and employment releases.
+   - `FRED_API_KEY` (optional, free at <https://fred.stlouisfed.org/docs/api/api_key.html>). Without
+     it, US release dates come from the archived BLS release files.
 3. **Variables** (optional): `WIKI_MODEL` (default `claude-sonnet-5-5`), `WIKI_MAX_ITEMS` (default 4).
 4. Run *Update data and deploy*, then *Update LLM wiki* (`push_mode: pr` for a trial run).
 
@@ -86,6 +87,9 @@ claude -p "\`.github/wiki-agent.md\` の指示に従い、\`.wiki-work/chunks/00
 - Yahoo Finance's chart endpoint is unofficial and may rate-limit; a failed fetch keeps the previous data.
 - BOJ meetings carry only the date for now; the decision is published in PDFs and is not parsed yet.
 - BLS figures are the currently published (revised) values, not the first print.
+- Without a FRED key, a US release appears once the Internet Archive has crawled the BLS archive
+  file, which can be a few days after the release. The Employment Situation releases delayed by the
+  2025 shutdown are mapped to their reference months by hand.
 - Release-time conventions: FOMC times come from the statement; CPI/NFP are 08:30 New York; BOJ
   decisions are taken as 12:00 Tokyo (marked as approximate); ECB decisions are 13:45 Frankfurt
   until June 2022 and 14:15 after; BoE decisions are 12:00 London (the emergency cut of 11 March 2020

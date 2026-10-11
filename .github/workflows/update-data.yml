@@ -3,7 +3,8 @@ name: Update data and deploy
 # Collect prices and event calendars, compute event windows (`pup build`), export the wiki branch
 # to JSON, build the SPA and deploy everything to GitHub Pages.
 #
-# Secrets (optional): FRED_API_KEY — release dates for US CPI and the employment report.
+# Secrets (optional): FRED_API_KEY — release dates for US CPI and the employment report (without it,
+# the dates come from the Internet Archive's index of archived BLS releases).
 on:
   schedule:
     - cron: "0 22 * * *" # JST 07:00, after the US close
