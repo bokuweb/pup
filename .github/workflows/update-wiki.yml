@@ -1,0 +1,172 @@
+name: Update LLM wiki
+
+# Write up recent events in the OKF wiki (orphan branch `wiki`) from the facts deployed on Pages.
+#
+#   wiki-plan     (deterministic): pick events (newest first, capped), write source bundles and skeletons
+#   Claude Code   (LLM)          : write the analysis from the bundles only, one fresh session per chunk
+#   wiki-finalize (deterministic): regenerate tables, index and log; roll back unwritten pages
+#   wiki-check    (deterministic): frontmatter, links, and every number against its cited fact
+#                                  → on failure the LLM gets one repair pass; still failing → no push
+#
+# Secrets  : CLAUDE_CODE_OAUTH_TOKEN (`claude setup-token`, runs on a Pro/Max plan) or ANTHROPIC_API_KEY
+# Variables: WIKI_MODEL (default claude-sonnet-5-5), WIKI_MAX_ITEMS (default 4)
+on:
+  schedule:
+    - cron: "0 23 * * *" # JST 08:00, an hour after the data deploy
+  workflow_dispatch:
+    inputs:
+      max_items:
+        description: "Events to write up in this run (cost cap)"
+        required: false
+        type: string
+      push_mode:
+        description: "direct = push to the wiki branch / pr = open a PR against it (trial runs)"
+        required: false
+        default: "direct"
+        type: choice
+        options: ["direct", "pr"]
+
+permissions:
+  contents: write
+  pull-requests: write
+  actions: write
+
+concurrency:
+  group: update-wiki
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    env:
+      WIKI_BASE: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/data
+      WIKI_MODEL: ${{ vars.WIKI_MODEL || 'claude-sonnet-5-5' }}
+      WIKI_MAX_ITEMS: ${{ github.event.inputs.max_items || vars.WIKI_MAX_ITEMS || '4' }}
+      PUSH_MODE: ${{ github.event.inputs.push_mode || 'direct' }}
+      HAS_CLAUDE_AUTH: ${{ secrets.ANTHROPIC_API_KEY != '' || secrets.CLAUDE_CODE_OAUTH_TOKEN != '' }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check out wiki branch
+        id: wiki
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          if git ls-remote --exit-code --heads origin wiki >/dev/null; then
+            git fetch --depth=1 origin wiki
+            git worktree add -b wiki wiki FETCH_HEAD
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "::notice::creating the wiki branch as an orphan"
+            git worktree add --orphan -b wiki wiki
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+      - run: cargo build --release
+
+      - name: Plan
+        id: plan
+        run: |
+          ./target/release/pup wiki-plan --wiki wiki --work .wiki-work
+          echo "tasks=$(jq '.tasks | length' .wiki-work/plan.json)" >> "$GITHUB_OUTPUT"
+          cat .wiki-work/plan.md >> "$GITHUB_STEP_SUMMARY"
+
+      - uses: actions/setup-node@v4
+        if: steps.plan.outputs.tasks != '0' && env.HAS_CLAUDE_AUTH == 'true'
+        with:
+          node-version: 22
+
+      - name: Install Claude Code CLI
+        if: steps.plan.outputs.tasks != '0' && env.HAS_CLAUDE_AUTH == 'true'
+        run: npm install -g @anthropic-ai/claude-code
+
+      # Claude may only read and edit wiki/ (no Bash, no network): bundles are external data, so this
+      # limits what a prompt injection could do. One fresh session per chunk keeps each run focused.
+      - name: Write wiki pages (Claude Code, per chunk)
+        if: steps.plan.outputs.tasks != '0' && env.HAS_CLAUDE_AUTH == 'true'
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+        run: |
+          [ -n "$ANTHROPIC_API_KEY" ] || unset ANTHROPIC_API_KEY
+          [ -n "$CLAUDE_CODE_OAUTH_TOKEN" ] || unset CLAUDE_CODE_OAUTH_TOKEN
+          echo "### Claude Code (per chunk)" >> "$GITHUB_STEP_SUMMARY"
+          for f in .wiki-work/chunks/*.md; do
+            prompt="\`.github/wiki-agent.md\` の指示に従い、\`$f\` に載っている全タスクを最後まで処理して wiki を更新してください。
+          ソースバンドル (\`.wiki-work/sources/\`) の事実だけを根拠にし、数値のルールを厳守してください。途中で作業を切り上げないこと。"
+            if claude -p "$prompt" < /dev/null \
+                --model "$WIKI_MODEL" \
+                --max-turns 50 \
+                --permission-mode dontAsk \
+                --allowedTools "Read,Glob,Grep,Edit(wiki/**),Write(wiki/**),MultiEdit(wiki/**)" \
+                --disallowedTools "Bash,WebFetch,WebSearch,NotebookEdit" \
+                --output-format json > "$f.result.json" 2> "$f.err"; then
+              jq -r --arg f "$f" '"- \($f): \(.num_turns) turns, $\(.total_cost_usd), is_error=\(.is_error)"' "$f.result.json" | tee -a "$GITHUB_STEP_SUMMARY"
+            else
+              echo "::warning::$f failed: $(tail -c 500 "$f.err")"
+              echo "- $f: failed" >> "$GITHUB_STEP_SUMMARY"
+            fi
+          done
+
+      - name: Finalize
+        run: ./target/release/pup wiki-finalize --wiki wiki --work .wiki-work
+
+      - name: Check
+        id: check
+        continue-on-error: true
+        run: ./target/release/pup wiki-check --wiki wiki --work .wiki-work --changed
+
+      - name: Repair (Claude Code)
+        if: steps.check.outcome == 'failure' && env.HAS_CLAUDE_AUTH == 'true'
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+        run: |
+          [ -n "$ANTHROPIC_API_KEY" ] || unset ANTHROPIC_API_KEY
+          [ -n "$CLAUDE_CODE_OAUTH_TOKEN" ] || unset CLAUDE_CODE_OAUTH_TOKEN
+          command -v claude >/dev/null || npm install -g @anthropic-ai/claude-code
+          claude -p "\`.wiki-work/check-report.md\` に wiki の検証エラーがあります。\`.github/wiki-agent.md\` の数値のルールに従い、
+          エラーになった箇所だけを直してください。数値はソースバンドル (\`.wiki-work/sources/\`) の事実の text をそのまま写し、
+          脚注を同じ節に付けること。根拠を示せない数値は記述ごと削除してください。" < /dev/null \
+            --model "$WIKI_MODEL" \
+            --max-turns 20 \
+            --permission-mode dontAsk \
+            --allowedTools "Read,Glob,Grep,Edit(wiki/**),Write(wiki/**),MultiEdit(wiki/**)" \
+            --disallowedTools "Bash,WebFetch,WebSearch,NotebookEdit" \
+            --output-format json > .wiki-work/repair.result.json || echo "::warning::repair pass failed"
+
+      - name: Re-check after repair
+        if: steps.check.outcome == 'failure'
+        run: |
+          ./target/release/pup wiki-finalize --wiki wiki --work .wiki-work
+          ./target/release/pup wiki-check --wiki wiki --work .wiki-work --changed
+
+      - name: Report
+        if: always()
+        run: '[ -f .wiki-work/check-report.md ] && cat .wiki-work/check-report.md >> "$GITHUB_STEP_SUMMARY" || true'
+
+      - name: Commit and push
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          cd wiki
+          git add -A
+          if git diff --cached --quiet; then
+            echo "::notice::no wiki changes"
+            exit 0
+          fi
+          date=$(jq -r '.date' ../.wiki-work/plan.json)
+          n=$(jq '.tasks | length' ../.wiki-work/plan.json)
+          git commit -q -m "wiki: ${date} (${n} events planned)" -m "run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          if [ "$PUSH_MODE" = "pr" ] && [ "${{ steps.wiki.outputs.exists }}" = "true" ]; then
+            branch="wiki-update/${date}-${{ github.run_id }}"
+            git push origin "HEAD:refs/heads/${branch}"
+            gh pr create --base wiki --head "$branch" --title "wiki: ${date}" --body-file ../.wiki-work/plan.md
+          else
+            git push origin HEAD:refs/heads/wiki
+            # Redeploy so the app shows the new pages.
+            gh workflow run update-data.yml --ref main || echo "::warning::could not trigger the deploy"
+          fi
