@@ -46,7 +46,7 @@ export function App() {
       </header>
       <main>{view}</main>
       <footer>
-        価格データは Yahoo Finance、FOMC は FRB、日銀会合は日本銀行、CPI・雇用統計は BLS / FRED より。公開しているのは変化率などの派生値のみ。投資助言ではない。
+        価格データは Yahoo Finance、FOMC は FRB、日銀会合は日本銀行、ECB 理事会は ECB、BoE 金融政策委員会はイングランド銀行、CPI・雇用統計は BLS / FRED より。公開しているのは変化率などの派生値のみ。投資助言ではない。
         {ready && <> · データ更新 {meta.generated_at.slice(0, 10)}</>}
       </footer>
     </>

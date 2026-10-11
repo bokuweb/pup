@@ -13,7 +13,7 @@ export type Series = { id: string; name: string; points: [number, number][] };
  *  (the major indices never collide; each panel has at most four series). */
 const MARKET_SLOT: Record<string, number> = {
   spx: 0, n225: 1, dax: 2, hsi: 3, ndx: 2, rut: 3, topix: 0, sx5e: 0, ftse: 1,
-  us10y: 0, vix: 0, usdjpy: 0, dxy: 1, gold: 3, wti: 1, btc: 2,
+  us10y: 0, vix: 0, usdjpy: 0, dxy: 1, eurusd: 2, gbpusd: 3, gold: 3, wti: 1, btc: 2,
 };
 
 export function colorOf(id: string, i: number): string {

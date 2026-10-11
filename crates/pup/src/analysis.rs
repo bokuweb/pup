@@ -229,7 +229,7 @@ pub fn groups(event: &Event, windows: &[MarketWindow]) -> Vec<(String, String)> 
     let mut g = vec![("all".to_string(), "全体".to_string())];
     let fact = |k: &str| event.facts.iter().find(|f| f.key == k);
     match event.kind.as_str() {
-        "fomc" => {
+        "fomc" | "ecb" | "boe" => {
             if let Some(f) = fact("decision") {
                 let id = match f.text.as_str() {
                     "利上げ" => "hike",

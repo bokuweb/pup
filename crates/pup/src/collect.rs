@@ -46,6 +46,11 @@ pub fn run(data: &Path, since: NaiveDate) -> Result<()> {
         sources::fomc::collect(&client, &data.join("cache/fomc")),
     );
     keep("boj", sources::boj::collect(&client));
+    keep("ecb", sources::ecb::collect(&client));
+    keep(
+        "boe",
+        sources::boe::collect(&client, &data.join("cache/boe")),
+    );
     match std::env::var("FRED_API_KEY").ok().filter(|k| !k.is_empty()) {
         Some(key) => {
             let r = (|| -> Result<(Vec<Event>, Vec<Event>)> {
