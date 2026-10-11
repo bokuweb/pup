@@ -1,5 +1,6 @@
 //! `pup collect`: fetch prices and event calendars into `data/` (raw inputs, not committed).
-//! A failing source keeps the previous run's output so one outage does not drop history.
+//! A failing source keeps the previous run's output, and events are merged by id, so one outage
+//! does not drop history.
 
 use crate::config::MARKETS;
 use crate::model::{Event, Series};
@@ -90,9 +91,26 @@ pub fn run(data: &Path, since: NaiveDate) -> Result<()> {
             }
         }
     }
+    keep(
+        "retail",
+        sources::census::releases(&client, &data.join("cache/retail"), since)
+            .and_then(|r| sources::census::events(&r)),
+    );
+    keep(
+        "gdp",
+        sources::bea::gdp_events(&client, &data.join("cache/bea"), since),
+    );
+    keep(
+        "pce",
+        sources::bea::pce_events(&client, &data.join("cache/bea"), since),
+    );
+    // New events replace previous ones with the same id; previous events a run did not return are
+    // kept, so a page that failed to load this time does not drop history.
+    let fresh: std::collections::BTreeSet<String> =
+        by_kind.values().flatten().map(|e| e.id.clone()).collect();
     let mut events: Vec<Event> = previous
         .into_iter()
-        .filter(|e| !by_kind.contains_key(e.kind.as_str()))
+        .filter(|e| !fresh.contains(&e.id))
         .collect();
     events.extend(by_kind.into_values().flatten());
     events.retain(|e| e.date >= since && e.time_utc <= chrono::Utc::now());

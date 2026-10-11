@@ -276,6 +276,38 @@ pub fn groups(event: &Event, windows: &[MarketWindow]) -> Vec<(String, String)> 
                 g.push((id.into(), label.into()));
             }
         }
+        "retail" => {
+            if let Some(m) = fact("retail_mom").and_then(|f| f.value) {
+                let (id, label) = if m.abs() < 0.05 {
+                    ("retail_flat", "前月比が横ばい")
+                } else if m > 0.0 {
+                    ("retail_up", "前月比がプラス")
+                } else {
+                    ("retail_down", "前月比がマイナス")
+                };
+                g.push((id.into(), label.into()));
+            }
+        }
+        "gdp" | "pce" => {
+            let (now, before) = if event.kind == "gdp" {
+                ("gdp_saar", "gdp_saar_prev")
+            } else {
+                ("core_pce_mom", "core_pce_mom_prev")
+            };
+            if let (Some(a), Some(b)) = (
+                fact(now).and_then(|f| f.value),
+                fact(before).and_then(|f| f.value),
+            ) {
+                let (id, label) = if (a - b).abs() < 0.05 {
+                    ("same", "前回と同じ")
+                } else if a > b {
+                    ("faster", "前回から加速")
+                } else {
+                    ("slower", "前回から減速")
+                };
+                g.push((id.into(), label.into()));
+            }
+        }
         "jpcpi" => {
             if let Some(c) = fact("core_yoy_change").and_then(|f| f.value) {
                 let (id, label) = if c.abs() < 0.05 {
