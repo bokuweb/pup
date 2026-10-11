@@ -1,0 +1,83 @@
+name: Update data and deploy
+
+# Collect prices and event calendars, compute event windows (`pup build`), export the wiki branch
+# to JSON, build the SPA and deploy everything to GitHub Pages.
+#
+# Secrets (optional): FRED_API_KEY — release dates for US CPI and the employment report.
+on:
+  schedule:
+    - cron: "0 22 * * *" # JST 07:00, after the US close
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      FRED_API_KEY: ${{ secrets.FRED_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+
+      # Raw inputs (prices, FOMC statements) are re-fetchable; the cache only saves requests.
+      - uses: actions/cache@v4
+        with:
+          path: data
+          key: data-${{ github.run_id }}
+          restore-keys: data-
+
+      - run: cargo build --release
+
+      - name: Collect
+        run: ./target/release/pup collect
+
+      - name: Build facts
+        run: ./target/release/pup build
+
+      - name: Export wiki
+        run: |
+          if git ls-remote --exit-code --heads origin wiki >/dev/null; then
+            git fetch --depth=1 origin wiki
+            git worktree add wiki FETCH_HEAD
+            ./target/release/pup wiki-export --wiki wiki --out public/wiki
+          else
+            mkdir -p public/wiki && echo '[]' > public/wiki/index.json && echo '{"nodes":[],"links":[]}' > public/wiki/graph.json
+          fi
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+
+      - name: Build app
+        working-directory: web
+        run: npm ci && npm run build
+
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: web/dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
