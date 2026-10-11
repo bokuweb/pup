@@ -6,7 +6,8 @@ writes the analysis and every number it writes is checked against those facts.
 
 - **Events**: FOMC decisions, Bank of Japan policy meetings, ECB Governing Council decisions,
   Bank of England MPC decisions, Japan's national CPI, the BOJ Tankan, US CPI, the US employment
-  report, US PPI and JOLTS (all 2016–).
+  report, US PPI, JOLTS, advance retail sales, the GDP advance estimate and the PCE price index
+  (all 2016–).
 - **Markets**: S&P 500, Nasdaq 100, Russell 2000, VIX, Nikkei 225, TOPIX (1306 ETF), DAX, Euro Stoxx 50,
   FTSE 100, Hang Seng, US 10-year yield, USD/JPY, EUR/USD, GBP/USD, dollar index, gold, WTI, bitcoin.
 - **App**: GitHub Pages (`https://bokuweb.github.io/pup/`) — event charts (±20 sessions), averages
@@ -40,7 +41,9 @@ update-data.yml  (daily, JST 07:00)
                                    Japan CPI summaries (e-Stat) and Tankan summaries (BOJ), read
                                    with pdftotext (poppler-utils) and cached per release,
                                    US CPI/NFP/PPI/JOLTS release dates (FRED with FRED_API_KEY, otherwise the
-                                   Internet Archive's index of archived BLS releases) + BLS figures
+                                   Internet Archive's index of archived BLS releases) + BLS figures,
+                                   Census advance retail reports (PDF), BEA news archive and
+                                   release pages (GDP advance estimate, Personal Income and Outlays)
   pup build     → public/data/     event windows, aggregates, market reactions (JSON)
   pup wiki-export → public/wiki/   wiki branch → JSON
   web (Vite)    → Pages
@@ -86,7 +89,9 @@ claude -p "\`.github/wiki-agent.md\` の指示に従い、\`.wiki-work/chunks/00
 
 - Yahoo Finance's chart endpoint is unofficial and may rate-limit; a failed fetch keeps the previous data.
 - BOJ meetings carry only the date for now; the decision is published in PDFs and is not parsed yet.
-- BLS figures are the currently published (revised) values, not the first print.
+- BLS figures are the currently published (revised) values, not the first print. Retail sales,
+  GDP and PCE are first prints, read from each release.
+- The BEA archive can lag the latest release by a few weeks; such a release appears once listed.
 - Without a FRED key, a US release appears once the Internet Archive has crawled the BLS archive
   file, which can be a few days after the release. The Employment Situation releases delayed by the
   2025 shutdown are mapped to their reference months by hand.

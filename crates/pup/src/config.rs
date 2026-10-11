@@ -344,6 +344,21 @@ pub const EVENT_TYPES: &[EventTypeDef] = &[
         name: "米JOLTS",
         description: "米求人・離職動態調査（求人件数）の公表（BLS、10:00）",
     },
+    EventTypeDef {
+        id: "retail",
+        name: "米小売売上高",
+        description: "米小売売上高（速報）の公表（Census Bureau）",
+    },
+    EventTypeDef {
+        id: "gdp",
+        name: "米GDP速報",
+        description: "米実質GDP（速報値、前期比年率）の公表（BEA）",
+    },
+    EventTypeDef {
+        id: "pce",
+        name: "米PCE物価",
+        description: "米個人所得・支出（PCE 物価指数）の公表（BEA）",
+    },
 ];
 
 pub fn event_type(id: &str) -> Option<&'static EventTypeDef> {
