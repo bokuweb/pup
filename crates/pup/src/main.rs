@@ -2,6 +2,7 @@ mod analysis;
 mod build;
 mod collect;
 mod config;
+mod dummy;
 mod http;
 mod model;
 mod sources;
@@ -45,6 +46,10 @@ enum Cmd {
     WikiCheck(wiki::check::Args),
     /// Convert the wiki branch to JSON for the SPA.
     WikiExport(wiki::export::Args),
+    /// Write synthetic prices and events (all event types) for an offline demo.
+    Dummy(dummy::Args),
+    /// Fill planned wiki pages with template prose built from the facts (demo, no LLM).
+    WikiDummyWrite(dummy::WriteArgs),
 }
 
 fn main() -> Result<()> {
@@ -61,5 +66,7 @@ fn main() -> Result<()> {
         Cmd::WikiFinalize(a) => wiki::finalize::run(&a),
         Cmd::WikiCheck(a) => wiki::check::run(&a),
         Cmd::WikiExport(a) => wiki::export::run(&a),
+        Cmd::Dummy(a) => dummy::run(&a),
+        Cmd::WikiDummyWrite(a) => dummy::write(&a),
     }
 }
