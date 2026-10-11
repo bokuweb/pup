@@ -1,4 +1,5 @@
-//! US CPI and Employment Situation figures from the BLS public API (v1, no key, 10 years per call).
+//! US CPI, Employment Situation, PPI and JOLTS figures from the BLS public API (v1, no key,
+//! 10 years per call).
 //! Values are the current published ones (later revisions included), not the first print.
 
 use crate::config;
@@ -10,8 +11,16 @@ use std::collections::BTreeMap;
 
 const CPI_ALL: &str = "CUUR0000SA0";
 const CPI_CORE: &str = "CUUR0000SA0L1E";
+/// Seasonally adjusted, for the month-on-month rates the release leads with.
+const CPI_ALL_SA: &str = "CUSR0000SA0";
+const CPI_CORE_SA: &str = "CUSR0000SA0L1E";
 const PAYROLLS: &str = "CES0000000001";
 const UNEMPLOYMENT: &str = "LNS14000000";
+/// PPI final demand, seasonally adjusted (the headline m/m) and not adjusted (y/y).
+const PPI_SA: &str = "WPSFD4";
+const PPI_NSA: &str = "WPUFD4";
+/// JOLTS job openings, total nonfarm, seasonally adjusted, thousands.
+const OPENINGS: &str = "JTS000000000000000JOL";
 
 type Monthly = BTreeMap<String, BTreeMap<(i32, u32), f64>>;
 
@@ -37,7 +46,7 @@ fn fetch_span(
     to: i32,
     out: &mut Monthly,
 ) -> Result<()> {
-    let body = json!({"seriesid": [CPI_ALL, CPI_CORE, PAYROLLS, UNEMPLOYMENT], "startyear": from.to_string(), "endyear": to.to_string()});
+    let body = json!({"seriesid": [CPI_ALL, CPI_CORE, CPI_ALL_SA, CPI_CORE_SA, PAYROLLS, UNEMPLOYMENT, PPI_SA, PPI_NSA, OPENINGS], "startyear": from.to_string(), "endyear": to.to_string()});
     let resp = client
         .post("https://api.bls.gov/publicAPI/v1/timeseries/data/")
         .json(&body)
@@ -77,13 +86,20 @@ fn ym(d: NaiveDate) -> (i32, u32) {
     (d.year(), d.month())
 }
 
-/// The month a release covers: the month before, except the Employment Situation releases delayed
-/// by the 2025 shutdown (September's on 20 November; October's and November's together on
-/// 16 December, whose headline is November).
+/// The month a release covers: the month before, except the releases delayed by the 2025 shutdown
+/// (Employment Situation: September's on 20 November, October's and November's together on
+/// 16 December; PPI: September's on 25 November, October's and November's on 14 January,
+/// December's on 30 January; a combined release is labelled with its later month). JOLTS lags
+/// five to seven weeks, so its month is the one 48 days before the release; this gives
+/// consecutive months for every release since 2016 apart from the combined one of 9 December 2025.
 pub fn reference_month(kind: &str, date: NaiveDate) -> Result<(i32, u32)> {
     match (kind, date.to_string().as_str()) {
         ("nfp", "2025-11-20") => Ok((2025, 9)),
         ("nfp", "2025-12-16") => Ok((2025, 11)),
+        ("ppi", "2025-11-25") => Ok((2025, 9)),
+        ("ppi", "2026-01-14") => Ok((2025, 11)),
+        ("ppi", "2026-01-30") => Ok((2025, 12)),
+        ("jolts", _) => Ok(ym(date - chrono::Duration::days(48))),
         _ => Ok(ym(date
             .checked_sub_months(Months::new(1))
             .context("month")?)),
@@ -94,6 +110,12 @@ fn yoy(series: &BTreeMap<(i32, u32), f64>, m: (i32, u32)) -> Option<f64> {
     Some((series.get(&m)? / series.get(&(m.0 - 1, m.1))? - 1.0) * 100.0)
 }
 
+/// Month-on-month change rounded to the published decimal.
+fn mom(series: &BTreeMap<(i32, u32), f64>, m: (i32, u32)) -> Option<f64> {
+    let v = (series.get(&m)? / series.get(&prev_month(m))? - 1.0) * 100.0;
+    Some((v * 10.0).round() / 10.0)
+}
+
 fn prev_month(m: (i32, u32)) -> (i32, u32) {
     if m.1 == 1 {
         (m.0 - 1, 12)
@@ -102,10 +124,16 @@ fn prev_month(m: (i32, u32)) -> (i32, u32) {
     }
 }
 
-fn release_time(date: NaiveDate) -> Result<chrono::DateTime<chrono::Utc>> {
+/// 08:30 New York, except JOLTS at 10:00.
+fn release_time(kind: &str, date: NaiveDate) -> Result<chrono::DateTime<chrono::Utc>> {
     let ny: chrono_tz::Tz = "America/New_York".parse().unwrap();
+    let t = if kind == "jolts" {
+        NaiveTime::from_hms_opt(10, 0, 0).unwrap()
+    } else {
+        NaiveTime::from_hms_opt(8, 30, 0).unwrap()
+    };
     Ok(ny
-        .from_local_datetime(&date.and_time(NaiveTime::from_hms_opt(8, 30, 0).unwrap()))
+        .from_local_datetime(&date.and_time(t))
         .earliest()
         .context("time")?
         .with_timezone(&chrono::Utc))
@@ -129,6 +157,24 @@ pub fn events(kind: &str, dates: &[NaiveDate], data: &Monthly) -> Result<Vec<Eve
                     Fact::num("cpi_yoy", "CPI 前年比", h, 1, "%"),
                     Fact::num("core_yoy", "コア CPI 前年比", c, 1, "%"),
                 ];
+                if let Some(m) = mom(get(CPI_ALL_SA), refm) {
+                    f.push(Fact::signed(
+                        "cpi_mom",
+                        "CPI 前月比（季節調整済み）",
+                        m,
+                        1,
+                        "%",
+                    ));
+                }
+                if let Some(m) = mom(get(CPI_CORE_SA), refm) {
+                    f.push(Fact::signed(
+                        "core_mom",
+                        "コア CPI 前月比（季節調整済み）",
+                        m,
+                        1,
+                        "%",
+                    ));
+                }
                 if let (Some(ph), Some(pc)) = (
                     yoy(get(CPI_ALL), prev_month(refm)),
                     yoy(get(CPI_CORE), prev_month(refm)),
@@ -175,6 +221,53 @@ pub fn events(kind: &str, dates: &[NaiveDate], data: &Monthly) -> Result<Vec<Eve
                 }
                 f
             }
+            "ppi" => {
+                let (Some(m), Some(y)) = (mom(get(PPI_SA), refm), yoy(get(PPI_NSA), refm)) else {
+                    continue;
+                };
+                let mut f = vec![
+                    Fact::text("reference", "対象月", label.clone()),
+                    Fact::signed("ppi_mom", "PPI 最終需要 前月比（季節調整済み）", m, 1, "%"),
+                    Fact::num("ppi_yoy", "PPI 最終需要 前年比", y, 1, "%"),
+                ];
+                if let Some(pm) = mom(get(PPI_SA), prev_month(refm)) {
+                    f.push(Fact::signed(
+                        "ppi_mom_prev",
+                        "PPI 前月比（前月）",
+                        pm,
+                        1,
+                        "%",
+                    ));
+                }
+                f
+            }
+            "jolts" => {
+                let o = get(OPENINGS);
+                let Some(now) = o.get(&refm) else {
+                    continue;
+                };
+                let mut f = vec![
+                    Fact::text("reference", "対象月", label.clone()),
+                    Fact::num("openings", "求人件数（季節調整済み）", *now, 0, "千件"),
+                ];
+                if let Some(before) = o.get(&prev_month(refm)) {
+                    f.push(Fact::num(
+                        "openings_prev",
+                        "求人件数（前月）",
+                        *before,
+                        0,
+                        "千件",
+                    ));
+                    f.push(Fact::signed(
+                        "openings_change",
+                        "求人件数の前月差",
+                        now - before,
+                        0,
+                        "千件",
+                    ));
+                }
+                f
+            }
             _ => unreachable!(),
         };
         let name = config::event_type(kind).map(|t| t.name).unwrap_or(kind);
@@ -183,7 +276,7 @@ pub fn events(kind: &str, dates: &[NaiveDate], data: &Monthly) -> Result<Vec<Eve
             kind: kind.into(),
             title: format!("{name} {}（{label}）", date.format("%Y年%-m月%-d日")),
             date,
-            time_utc: release_time(date)?,
+            time_utc: release_time(kind, date)?,
             time_approx: false,
             facts,
             sources: vec![SourceRef {
@@ -193,4 +286,37 @@ pub fn events(kind: &str, dates: &[NaiveDate], data: &Monthly) -> Result<Vec<Eve
         });
     }
     Ok(out)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn d(s: &str) -> NaiveDate {
+        NaiveDate::parse_from_str(s, "%Y-%m-%d").unwrap()
+    }
+
+    #[test]
+    fn reference_months() {
+        assert_eq!(reference_month("cpi", d("2026-09-11")).unwrap(), (2026, 8));
+        assert_eq!(reference_month("nfp", d("2025-12-16")).unwrap(), (2025, 11));
+        assert_eq!(reference_month("ppi", d("2026-01-30")).unwrap(), (2025, 12));
+        // JOLTS: early-month releases cover two months back, late-month ones the month before.
+        assert_eq!(
+            reference_month("jolts", d("2016-01-12")).unwrap(),
+            (2015, 11)
+        );
+        assert_eq!(
+            reference_month("jolts", d("2026-09-01")).unwrap(),
+            (2026, 7)
+        );
+        assert_eq!(
+            reference_month("jolts", d("2026-09-29")).unwrap(),
+            (2026, 8)
+        );
+        assert_eq!(
+            reference_month("jolts", d("2025-12-09")).unwrap(),
+            (2025, 10)
+        );
+    }
 }

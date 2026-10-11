@@ -69,23 +69,25 @@ pub fn run(data: &Path, since: NaiveDate) -> Result<()> {
             None => sources::wayback::bls_release_dates(&client, bls_name, since),
         }
     };
-    let r = (|| -> Result<(Vec<Event>, Vec<Event>)> {
-        let bls = sources::bls::fetch(&client)?;
-        let cpi = dates(sources::fred::RELEASE_CPI, "cpi")?;
-        let nfp = dates(sources::fred::RELEASE_EMPLOYMENT, "empsit")?;
-        Ok((
-            sources::bls::events("cpi", &cpi, &bls)?,
-            sources::bls::events("nfp", &nfp, &bls)?,
-        ))
-    })();
-    match r {
-        Ok((cpi, nfp)) => {
-            keep("cpi", Ok(cpi));
-            keep("nfp", Ok(nfp));
+    match sources::bls::fetch(&client) {
+        Ok(bls) => {
+            for (kind, fred_id, bls_name) in [
+                ("cpi", sources::fred::RELEASE_CPI, "cpi"),
+                ("nfp", sources::fred::RELEASE_EMPLOYMENT, "empsit"),
+                ("ppi", sources::fred::RELEASE_PPI, "ppi"),
+                ("jolts", sources::fred::RELEASE_JOLTS, "jolts"),
+            ] {
+                keep(
+                    kind,
+                    dates(fred_id, bls_name).and_then(|d| sources::bls::events(kind, &d, &bls)),
+                );
+                std::thread::sleep(std::time::Duration::from_millis(1000));
+            }
         }
         Err(e) => {
-            keep("cpi", Err(anyhow::anyhow!("{e:#}")));
-            keep("nfp", Err(e));
+            for kind in ["cpi", "nfp", "ppi", "jolts"] {
+                keep(kind, Err(anyhow::anyhow!("BLS: {e:#}")));
+            }
         }
     }
     let mut events: Vec<Event> = previous

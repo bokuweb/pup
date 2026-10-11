@@ -5,8 +5,8 @@ and how they moved after — as machine-computed facts, charts, and an OKF wiki 
 writes the analysis and every number it writes is checked against those facts.
 
 - **Events**: FOMC decisions, Bank of Japan policy meetings, ECB Governing Council decisions,
-  Bank of England MPC decisions, Japan's national CPI, the BOJ Tankan, US CPI and the US employment
-  report (all 2016–).
+  Bank of England MPC decisions, Japan's national CPI, the BOJ Tankan, US CPI, the US employment
+  report, US PPI and JOLTS (all 2016–).
 - **Markets**: S&P 500, Nasdaq 100, Russell 2000, VIX, Nikkei 225, TOPIX (1306 ETF), DAX, Euro Stoxx 50,
   FTSE 100, Hang Seng, US 10-year yield, USD/JPY, EUR/USD, GBP/USD, dollar index, gold, WTI, bitcoin.
 - **App**: GitHub Pages (`https://bokuweb.github.io/pup/`) — event charts (±20 sessions), averages
@@ -39,7 +39,7 @@ update-data.yml  (daily, JST 07:00)
                                    ECB decisions + key rates (Data Portal), BoE MPC pages + Bank Rate,
                                    Japan CPI summaries (e-Stat) and Tankan summaries (BOJ), read
                                    with pdftotext (poppler-utils) and cached per release,
-                                   US CPI/NFP release dates (FRED with FRED_API_KEY, otherwise the
+                                   US CPI/NFP/PPI/JOLTS release dates (FRED with FRED_API_KEY, otherwise the
                                    Internet Archive's index of archived BLS releases) + BLS figures
   pup build     → public/data/     event windows, aggregates, market reactions (JSON)
   pup wiki-export → public/wiki/   wiki branch → JSON
@@ -54,7 +54,7 @@ update-wiki.yml  (daily, JST 08:00)
 
 ### Number checking
 
-Every number with a unit the LLM writes (`%`, `bp`, `pt`, `千人`) needs a footnote in the same
+Every number with a unit the LLM writes (`%`, `bp`, `pt`, `千人`, `千件`) needs a footnote in the same
 clause, `[^n]: fact:{scope}/{key} {text}`, where the fact exists in the published data, the footnote
 repeats its text, the number equals it, and a direction word after it (上昇/下落/…) agrees with its
 sign. Computing new numbers (differences, ratios) is not allowed. One failure blocks the day's push.

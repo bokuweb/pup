@@ -132,8 +132,10 @@ pub struct Token {
 fn token_re() -> &'static Regex {
     static RE: OnceLock<Regex> = OnceLock::new();
     RE.get_or_init(|| {
-        Regex::new(r"([+\-−▲△]?)(\d+(?:\.\d+)?)(?:〜(\d+(?:\.\d+)?))?\s?(%|％|bp|pt|ポイント|千人)")
-            .unwrap()
+        Regex::new(
+            r"([+\-−▲△]?)(\d+(?:\.\d+)?)(?:〜(\d+(?:\.\d+)?))?\s?(%|％|bp|pt|ポイント|千人|千件)",
+        )
+        .unwrap()
     })
 }
 
