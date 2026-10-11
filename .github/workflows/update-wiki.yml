@@ -94,6 +94,7 @@ jobs:
           [ -n "$ANTHROPIC_API_KEY" ] || unset ANTHROPIC_API_KEY
           [ -n "$CLAUDE_CODE_OAUTH_TOKEN" ] || unset CLAUDE_CODE_OAUTH_TOKEN
           echo "### Claude Code (per chunk)" >> "$GITHUB_STEP_SUMMARY"
+          ok=0
           for f in .wiki-work/chunks/*.md; do
             prompt="\`.github/wiki-agent.md\` の指示に従い、\`$f\` に載っている全タスクを最後まで処理して wiki を更新してください。
           ソースバンドル (\`.wiki-work/sources/\`) の事実だけを根拠にし、数値のルールを厳守してください。途中で作業を切り上げないこと。"
@@ -105,11 +106,17 @@ jobs:
                 --disallowedTools "Bash,WebFetch,WebSearch,NotebookEdit" \
                 --output-format json > "$f.result.json" 2> "$f.err"; then
               jq -r --arg f "$f" '"- \($f): \(.num_turns) turns, $\(.total_cost_usd), is_error=\(.is_error)"' "$f.result.json" | tee -a "$GITHUB_STEP_SUMMARY"
+              ok=$((ok + 1))
             else
-              echo "::warning::$f failed: $(tail -c 500 "$f.err")"
+              err=$(jq -r '.result // .error // empty' "$f.result.json" 2>/dev/null | tail -c 500)
+              echo "::warning::$f failed: ${err:-$(tail -c 500 "$f.result.json")} $(tail -c 300 "$f.err")"
               echo "- $f: failed" >> "$GITHUB_STEP_SUMMARY"
             fi
           done
+          if [ "$ok" -eq 0 ] && ls .wiki-work/chunks/*.md >/dev/null 2>&1; then
+            echo "::error::every Claude Code session failed"
+            exit 1
+          fi
 
       - name: Finalize
         run: ./target/release/pup wiki-finalize --wiki wiki --work .wiki-work
