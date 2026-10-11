@@ -221,6 +221,26 @@ pub const MARKETS: &[MarketDef] = &[
         true,
     ),
     m(
+        "eurusd",
+        "EURUSD=X",
+        "ユーロドル",
+        "金利・為替",
+        Measure::Percent,
+        "UTC",
+        (23, 59),
+        false,
+    ),
+    m(
+        "gbpusd",
+        "GBPUSD=X",
+        "ポンドドル",
+        "金利・為替",
+        Measure::Percent,
+        "UTC",
+        (23, 59),
+        false,
+    ),
+    m(
         "dxy",
         "DX-Y.NYB",
         "ドル指数",
@@ -283,6 +303,16 @@ pub const EVENT_TYPES: &[EventTypeDef] = &[
         id: "boj",
         name: "日銀金融政策決定会合",
         description: "日本銀行の金融政策決定会合（最終日）",
+    },
+    EventTypeDef {
+        id: "ecb",
+        name: "ECB 理事会",
+        description: "欧州中央銀行の金融政策の決定（理事会）",
+    },
+    EventTypeDef {
+        id: "boe",
+        name: "BoE 金融政策委員会",
+        description: "イングランド銀行の政策金利（Bank Rate）の決定（MPC）",
     },
     EventTypeDef {
         id: "cpi",

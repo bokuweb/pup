@@ -4,10 +4,10 @@ How major market indices behaved around key economic events — the state they w
 and how they moved after — as machine-computed facts, charts, and an OKF wiki in which Claude
 writes the analysis and every number it writes is checked against those facts.
 
-- **Events**: FOMC decisions (2016–), Bank of Japan policy meetings (2016–), US CPI and the US
-  employment report (with a FRED API key).
+- **Events**: FOMC decisions, Bank of Japan policy meetings, ECB Governing Council decisions and
+  Bank of England MPC decisions (all 2016–), US CPI and the US employment report (with a FRED API key).
 - **Markets**: S&P 500, Nasdaq 100, Russell 2000, VIX, Nikkei 225, TOPIX (1306 ETF), DAX, Euro Stoxx 50,
-  FTSE 100, Hang Seng, US 10-year yield, USD/JPY, dollar index, gold, WTI, bitcoin.
+  FTSE 100, Hang Seng, US 10-year yield, USD/JPY, EUR/USD, GBP/USD, dollar index, gold, WTI, bitcoin.
 - **App**: GitHub Pages (`https://bokuweb.github.io/pup/`) — event charts (±20 sessions), averages
   with interquartile bands by event type and sub-group, reactions per market, and the wiki.
 
@@ -35,6 +35,7 @@ Only derived values are published; raw price histories are not.
 ```
 update-data.yml  (daily, JST 07:00)
   pup collect   → data/            Yahoo Finance daily closes, Fed statements, BOJ meeting dates,
+                                   ECB decisions + key rates (Data Portal), BoE MPC pages + Bank Rate,
                                    FRED release dates + BLS figures (CPI/NFP, only with FRED_API_KEY)
   pup build     → public/data/     event windows, aggregates, market reactions (JSON)
   pup wiki-export → public/wiki/   wiki branch → JSON
@@ -83,7 +84,13 @@ claude -p "\`.github/wiki-agent.md\` の指示に従い、\`.wiki-work/chunks/00
 - BOJ meetings carry only the date for now; the decision is published in PDFs and is not parsed yet.
 - BLS figures are the currently published (revised) values, not the first print.
 - Release-time conventions: FOMC times come from the statement; CPI/NFP are 08:30 New York; BOJ
-  decisions are taken as 12:00 Tokyo (marked as approximate).
+  decisions are taken as 12:00 Tokyo (marked as approximate); ECB decisions are 13:45 Frankfurt
+  until June 2022 and 14:15 after; BoE decisions are 12:00 London (the emergency cut of 11 March 2020
+  is taken as 07:00 and both March 2020 special meetings are marked as approximate).
+- ECB and BoE decisions are read from the policy rate only (deposit facility rate, Bank Rate);
+  asset purchases and other balance-sheet measures are not recorded.
 - Consensus forecasts are not included: the free calendars that show them redistribute licensed
   vendor data, so "surprise" is approximated by the change from the previous release.
+- Sources: Federal Reserve, Bank of Japan, ECB (reuse with attribution), Bank of England, Yahoo
+  Finance. Only dates, decisions, rate levels and derived market moves are published.
 - Not investment advice.
