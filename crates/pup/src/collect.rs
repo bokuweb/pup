@@ -61,35 +61,32 @@ pub fn run(data: &Path, since: NaiveDate) -> Result<()> {
         sources::tankan::surveys(&client, &data.join("cache/tankan"))
             .and_then(|s| sources::tankan::events(&s)),
     );
-    match std::env::var("FRED_API_KEY").ok().filter(|k| !k.is_empty()) {
-        Some(key) => {
-            let r = (|| -> Result<(Vec<Event>, Vec<Event>)> {
-                let bls = sources::bls::fetch(&client)?;
-                let cpi =
-                    sources::fred::release_dates(&client, &key, sources::fred::RELEASE_CPI, since)?;
-                let nfp = sources::fred::release_dates(
-                    &client,
-                    &key,
-                    sources::fred::RELEASE_EMPLOYMENT,
-                    since,
-                )?;
-                Ok((
-                    sources::bls::events("cpi", &cpi, &bls)?,
-                    sources::bls::events("nfp", &nfp, &bls)?,
-                ))
-            })();
-            match r {
-                Ok((cpi, nfp)) => {
-                    keep("cpi", Ok(cpi));
-                    keep("nfp", Ok(nfp));
-                }
-                Err(e) => {
-                    keep("cpi", Err(anyhow::anyhow!("{e:#}")));
-                    keep("nfp", Err(e));
-                }
-            }
+    // Release dates from FRED when a key is set, otherwise from the archived BLS release files.
+    let fred_key = std::env::var("FRED_API_KEY").ok().filter(|k| !k.is_empty());
+    let dates = |fred_id: u32, bls_name: &str| -> Result<Vec<NaiveDate>> {
+        match &fred_key {
+            Some(key) => sources::fred::release_dates(&client, key, fred_id, since),
+            None => sources::wayback::bls_release_dates(&client, bls_name, since),
         }
-        None => tracing::warn!("FRED_API_KEY is not set; skipping CPI and employment releases"),
+    };
+    let r = (|| -> Result<(Vec<Event>, Vec<Event>)> {
+        let bls = sources::bls::fetch(&client)?;
+        let cpi = dates(sources::fred::RELEASE_CPI, "cpi")?;
+        let nfp = dates(sources::fred::RELEASE_EMPLOYMENT, "empsit")?;
+        Ok((
+            sources::bls::events("cpi", &cpi, &bls)?,
+            sources::bls::events("nfp", &nfp, &bls)?,
+        ))
+    })();
+    match r {
+        Ok((cpi, nfp)) => {
+            keep("cpi", Ok(cpi));
+            keep("nfp", Ok(nfp));
+        }
+        Err(e) => {
+            keep("cpi", Err(anyhow::anyhow!("{e:#}")));
+            keep("nfp", Err(e));
+        }
     }
     let mut events: Vec<Event> = previous
         .into_iter()

@@ -6,4 +6,5 @@ pub mod fomc;
 pub mod fred;
 pub mod jpcpi;
 pub mod tankan;
+pub mod wayback;
 pub mod yahoo;
