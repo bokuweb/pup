@@ -52,9 +52,39 @@ tags: []
 | 日経平均 | -0.15%（36%） | -0.06%（43%） | +4.36%（86%） |
 | 米10年金利 | +1.9bp（71%） | +4.1bp（57%） | +4.8bp（64%） |
 | ドル円 | +0.18%（50%） | +0.93%（57%） | +0.53%（43%） |
+
+### この種類のイベント（wiki に分析があるもの）
+
+- 2026-09-18 [日銀金融政策決定会合 2026年9月18日](../events/boj/2026-09-18.md)
 <!-- pup:end aggregates -->
 
 ## 傾向と記録
 
 <!-- llm:begin -->
+### 傾向のまとめ
+- S&P 500 は1本目の平均が +0.03%[^1] とほぼ動かず、上昇した割合は 56%[^2]。20本目の平均は +1.85%[^3] で、上昇した割合は 73%[^4] に高まる。
+- 日経平均は1本目の平均が +0.13%[^5]、上昇した割合は 56%[^6] で、5本目の平均は +0.11%[^7] と小幅にとどまる。
+- 米10年金利は5本目の平均が -1.4bp[^8] で、上昇した割合は 43%[^9] と、低下する例のほうがやや多い。
+- 直前の VIX が 15〜25 のとき、VIX の1本目の平均は -0.21pt[^10] で、上昇した割合は 28%[^11] と低い。ドル円の5本目の平均は -0.30%[^12] で、全体の -0.11%[^13] より下げ幅が大きい。
+
+### 記録
+#### 2026-09-18 [日銀金融政策決定会合 2026年9月18日](../events/boj/2026-09-18.md)
+- 決定内容はデータに含まれない。1本目は S&P 500 が +0.17%[^14]、日経平均が +1.38%[^15]、米10年金利が 5.1bp 上昇した[^16]。
+
+[^1]: fact:type-boj/boj.all.spx.r1.mean +0.03%
+[^2]: fact:type-boj/boj.all.spx.r1.up_share 56%
+[^3]: fact:type-boj/boj.all.spx.r20.mean +1.85%
+[^4]: fact:type-boj/boj.all.spx.r20.up_share 73%
+[^5]: fact:type-boj/boj.all.n225.r1.mean +0.13%
+[^6]: fact:type-boj/boj.all.n225.r1.up_share 56%
+[^7]: fact:type-boj/boj.all.n225.r5.mean +0.11%
+[^8]: fact:type-boj/boj.all.us10y.r5.mean -1.4bp
+[^9]: fact:type-boj/boj.all.us10y.r5.up_share 43%
+[^10]: fact:type-boj/boj.vix_mid.vix.r1.mean -0.21pt
+[^11]: fact:type-boj/boj.vix_mid.vix.r1.up_share 28%
+[^12]: fact:type-boj/boj.vix_mid.usdjpy.r5.mean -0.30%
+[^13]: fact:type-boj/boj.all.usdjpy.r5.mean -0.11%
+[^14]: fact:boj-2026-09-18/spx.r1 +0.17%
+[^15]: fact:boj-2026-09-18/n225.r1 +1.38%
+[^16]: fact:boj-2026-09-18/us10y.r1 +5.1bp
 <!-- llm:end -->
