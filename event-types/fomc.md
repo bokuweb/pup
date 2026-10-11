@@ -82,9 +82,41 @@ tags: []
 | 日経平均 | +0.04%（73%） | -0.62%（45%） | +1.23%（73%） |
 | 米10年金利 | -2.1bp（36%） | -5.3bp（55%） | -8.6bp（27%） |
 | ドル円 | +0.37%（45%） | +0.54%（55%） | +1.41%（73%） |
+
+### この種類のイベント（wiki に分析があるもの）
+
+- 2026-09-16 [FOMC 2026年9月16日（利上げ）](../events/fomc/2026-09-16.md)
 <!-- pup:end aggregates -->
 
 ## 傾向と記録
 
 <!-- llm:begin -->
+### 傾向のまとめ
+- 全体では S&P 500 の1本目の平均は -0.14%[^1]、上昇した割合は 43%[^2] と、発表直後はやや弱い。
+- 利上げのときの S&P 500 は1本目の平均が +0.01%[^3] だが上昇した割合は 30%[^4] と低く、5本目の平均は -0.42%[^5]。
+- 利上げのときの米10年金利は、1本目の平均が -3.7bp[^6] で低下方向、5本目の平均が +2.6bp[^7] で上昇方向と、向きが入れ替わる。
+- VIX は利上げのとき1本目の平均が -0.56pt[^8]、5本目の平均が +0.03pt[^9] で、全体の1本目（+0.28pt[^10]）とは向きが異なる。
+- 直前の VIX が 15〜25 のとき、S&P 500 の5本目の平均は +0.42%[^11]、上昇した割合は 52%[^12]。
+
+### 記録
+#### 2026-09-16 [FOMC 2026年9月16日（利上げ）](../events/fomc/2026-09-16.md)
+- 政策金利を +25bp[^13] 引き上げ、3.75〜4.00%[^14] とした。1本目は S&P 500 -0.45%[^15]、日経平均 +0.33%[^16]、ドル円 +0.57%[^17]。
+
+[^1]: fact:type-fomc/fomc.all.spx.r1.mean -0.14%
+[^2]: fact:type-fomc/fomc.all.spx.r1.up_share 43%
+[^3]: fact:type-fomc/fomc.decision_hike.spx.r1.mean +0.01%
+[^4]: fact:type-fomc/fomc.decision_hike.spx.r1.up_share 30%
+[^5]: fact:type-fomc/fomc.decision_hike.spx.r5.mean -0.42%
+[^6]: fact:type-fomc/fomc.decision_hike.us10y.r1.mean -3.7bp
+[^7]: fact:type-fomc/fomc.decision_hike.us10y.r5.mean +2.6bp
+[^8]: fact:type-fomc/fomc.decision_hike.vix.r1.mean -0.56pt
+[^9]: fact:type-fomc/fomc.decision_hike.vix.r5.mean +0.03pt
+[^10]: fact:type-fomc/fomc.all.vix.r1.mean +0.28pt
+[^11]: fact:type-fomc/fomc.vix_mid.spx.r5.mean +0.42%
+[^12]: fact:type-fomc/fomc.vix_mid.spx.r5.up_share 52%
+[^13]: fact:fomc-2026-09-16/change_bp +25bp
+[^14]: fact:fomc-2026-09-16/target_range 3.75〜4.00%
+[^15]: fact:fomc-2026-09-16/spx.r1 -0.45%
+[^16]: fact:fomc-2026-09-16/n225.r1 +0.33%
+[^17]: fact:fomc-2026-09-16/usdjpy.r1 +0.57%
 <!-- llm:end -->

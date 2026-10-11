@@ -12,6 +12,15 @@ description: "イベント・市場・論点ページの一覧"
 
 - [FOMC](event-types/fomc.md)
 - [日銀金融政策決定会合](event-types/boj.md)
+- [ECB 理事会](event-types/ecb.md)
+- [BoE 金融政策委員会](event-types/boe.md)
+- [日本CPI](event-types/jpcpi.md)
+- [日銀短観](event-types/tankan.md)
+- [米CPI](event-types/cpi.md)
+- [米雇用統計](event-types/nfp.md)
+- [米PPI](event-types/ppi.md)
+- [米JOLTS](event-types/jolts.md)
+- [米小売売上高](event-types/retail.md)
 
 ## 市場
 
@@ -23,4 +32,16 @@ description: "イベント・市場・論点ページの一覧"
 
 ## 最近のイベント
 
+- 2026-10-02 [米雇用統計 2026年10月2日（2026年9月分）](events/nfp/2026-10-02.md)
+- 2026-10-01 [日銀短観 2026年9月調査](events/tankan/2026-10-01.md)
+- 2026-09-29 [米JOLTS 2026年9月29日（2026年8月分）](events/jolts/2026-09-29.md)
 - 2026-09-18 [日銀金融政策決定会合 2026年9月18日](events/boj/2026-09-18.md)
+- 2026-09-18 [日本CPI 2026年8月分](events/jpcpi/2026-09-18.md)
+- 2026-09-17 [BoE 金融政策委員会 2026年9月17日（据え置き）](events/boe/2026-09-17.md)
+- 2026-09-16 [FOMC 2026年9月16日（利上げ）](events/fomc/2026-09-16.md)
+- 2026-09-16 [米小売売上高 2026年9月16日（2026年8月分）](events/retail/2026-09-16.md)
+- 2026-09-11 [米CPI 2026年9月11日（2026年8月分）](events/cpi/2026-09-11.md)
+- 2026-09-10 [ECB 理事会 2026年9月10日（利上げ）](events/ecb/2026-09-10.md)
+- 2026-09-10 [米PPI 2026年9月10日（2026年8月分）](events/ppi/2026-09-10.md)
+- 2026-09-04 [米雇用統計 2026年9月4日（2026年8月分）](events/nfp/2026-09-04.md)
+- 2026-09-01 [米JOLTS 2026年9月1日（2026年7月分）](events/jolts/2026-09-01.md)
