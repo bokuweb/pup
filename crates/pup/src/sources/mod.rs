@@ -4,4 +4,6 @@ pub mod boj;
 pub mod ecb;
 pub mod fomc;
 pub mod fred;
+pub mod jpcpi;
+pub mod tankan;
 pub mod yahoo;

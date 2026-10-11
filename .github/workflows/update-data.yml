@@ -41,6 +41,10 @@ jobs:
 
       - run: cargo build --release
 
+      # pdftotext reads the release summaries of Japan's CPI and the BOJ Tankan.
+      - name: Install poppler
+        run: sudo apt-get update -q && sudo apt-get install -y -q poppler-utils
+
       - name: Collect
         run: ./target/release/pup collect
 

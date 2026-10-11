@@ -315,6 +315,16 @@ pub const EVENT_TYPES: &[EventTypeDef] = &[
         description: "イングランド銀行の政策金利（Bank Rate）の決定（MPC）",
     },
     EventTypeDef {
+        id: "jpcpi",
+        name: "日本CPI",
+        description: "全国消費者物価指数の公表（総務省統計局、8:30）",
+    },
+    EventTypeDef {
+        id: "tankan",
+        name: "日銀短観",
+        description: "全国企業短期経済観測調査の公表（日本銀行、8:50）",
+    },
+    EventTypeDef {
         id: "cpi",
         name: "米CPI",
         description: "米消費者物価指数の公表（BLS）",

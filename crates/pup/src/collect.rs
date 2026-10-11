@@ -51,6 +51,16 @@ pub fn run(data: &Path, since: NaiveDate) -> Result<()> {
         "boe",
         sources::boe::collect(&client, &data.join("cache/boe")),
     );
+    keep(
+        "jpcpi",
+        sources::jpcpi::releases(&client, &data.join("cache/jpcpi"))
+            .and_then(|r| sources::jpcpi::events(&r)),
+    );
+    keep(
+        "tankan",
+        sources::tankan::surveys(&client, &data.join("cache/tankan"))
+            .and_then(|s| sources::tankan::events(&s)),
+    );
     match std::env::var("FRED_API_KEY").ok().filter(|k| !k.is_empty()) {
         Some(key) => {
             let r = (|| -> Result<(Vec<Event>, Vec<Event>)> {

@@ -29,6 +29,62 @@ pub fn get_text(client: &reqwest::blocking::Client, url: &str) -> Result<String>
     Err(last.unwrap_or_else(|| anyhow::anyhow!("GET {url} failed")))
 }
 
+/// GET bytes with the same retries as [`get_text`].
+pub fn get_bytes(client: &reqwest::blocking::Client, url: &str) -> Result<Vec<u8>> {
+    let mut last = None;
+    for attempt in 0..4 {
+        if attempt > 0 {
+            std::thread::sleep(Duration::from_secs(2u64.pow(attempt)));
+        }
+        match client.get(url).send() {
+            Ok(resp) if resp.status().is_success() => {
+                return Ok(resp
+                    .bytes()
+                    .with_context(|| format!("read {url}"))?
+                    .to_vec())
+            }
+            Ok(resp) if resp.status().as_u16() == 429 || resp.status().is_server_error() => {
+                last = Some(anyhow::anyhow!("GET {url}: HTTP {}", resp.status()));
+            }
+            Ok(resp) => bail!("GET {url}: HTTP {}", resp.status()),
+            Err(e) => last = Some(anyhow::Error::new(e).context(format!("GET {url}"))),
+        }
+    }
+    Err(last.unwrap_or_else(|| anyhow::anyhow!("GET {url} failed")))
+}
+
+/// Text of a PDF's first page via poppler's `pdftotext` (`layout` keeps table rows on one line).
+pub fn pdf_first_page(pdf: &[u8], layout: bool) -> Result<String> {
+    let dir = std::env::temp_dir().join(format!("pup-pdf-{}", std::process::id()));
+    std::fs::create_dir_all(&dir)?;
+    let path = dir.join("in.pdf");
+    std::fs::write(&path, pdf)?;
+    let mut cmd = std::process::Command::new("pdftotext");
+    if layout {
+        cmd.arg("-layout");
+    }
+    let out = cmd
+        .args(["-l", "1"])
+        .arg(&path)
+        .arg("-")
+        .output()
+        .context("run pdftotext (install poppler-utils)")?;
+    anyhow::ensure!(out.status.success(), "pdftotext failed");
+    Ok(String::from_utf8_lossy(&out.stdout).into_owned())
+}
+
+/// Full-width digits and signs to ASCII; `▲`/`△` (used for negatives in Japanese tables) to `-`.
+pub fn ascii_digits(s: &str) -> String {
+    s.chars()
+        .map(|c| match c {
+            '０'..='９' => char::from_u32(c as u32 - '０' as u32 + '0' as u32).unwrap(),
+            '．' => '.',
+            '－' | '▲' | '△' | '−' => '-',
+            c => c,
+        })
+        .collect()
+}
+
 /// Plain text of an HTML page: tags removed, common entities decoded, whitespace collapsed.
 pub fn html_text(html: &str) -> String {
     let no_script = regex::Regex::new(r"(?is)<(script|style)[^>]*>.*?</(script|style)>")
