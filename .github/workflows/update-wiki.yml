@@ -93,6 +93,14 @@ jobs:
         run: |
           [ -n "$ANTHROPIC_API_KEY" ] || unset ANTHROPIC_API_KEY
           [ -n "$CLAUDE_CODE_OAUTH_TOKEN" ] || unset CLAUDE_CODE_OAUTH_TOKEN
+          if [ -n "${CLAUDE_CODE_OAUTH_TOKEN:-}" ]; then
+            # Shape only (never the value): a token pasted across a line wrap loses its tail.
+            t="$CLAUDE_CODE_OAUTH_TOKEN"
+            case "$t" in sk-ant-oat01-*) prefix=ok ;; *) prefix=bad ;; esac
+            ws=$(printf '%s' "$t" | tr -cd ' \t\r\n' | wc -c)
+            echo "CLAUDE_CODE_OAUTH_TOKEN: prefix=$prefix length=${#t} whitespace=$ws"
+            unset t
+          fi
           echo "### Claude Code (per chunk)" >> "$GITHUB_STEP_SUMMARY"
           ok=0
           for f in .wiki-work/chunks/*.md; do
