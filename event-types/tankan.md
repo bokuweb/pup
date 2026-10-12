@@ -86,6 +86,7 @@ tags: []
 ### この種類のイベント（wiki に分析があるもの）
 
 - 2026-10-01 [日銀短観 2026年9月調査](../events/tankan/2026-10-01.md)
+- 2026-07-01 [日銀短観 2026年6月調査](../events/tankan/2026-07-01.md)
 <!-- pup:end aggregates -->
 
 ## 傾向と記録
@@ -101,6 +102,9 @@ tags: []
 ### 記録
 #### 2026-10-01 [日銀短観 2026年9月調査](../events/tankan/2026-10-01.md)
 - 大企業製造業DIは 24pt[^13]、非製造業DIは 35pt[^14]。1本目は日経平均が +3.30%[^15]、TOPIX（1306 ETF）が +0.67%[^16]、米10年金利が 5.6bp 低下した[^17]。
+
+#### 2026-07-01 [日銀短観 2026年6月調査](../events/tankan/2026-07-01.md)
+- 大企業製造業DIは 22pt[^18]、非製造業DIは 37pt[^19]。1本目は日経平均が +0.59%[^20]、TOPIX（1306 ETF）が +0.52%[^21]、米10年金利が 5.7bp 上昇した[^22]。
 
 [^1]: fact:type-tankan/tankan.all.n225.r1.mean +0.03%
 [^2]: fact:type-tankan/tankan.all.n225.r1.up_share 58%
@@ -119,4 +123,9 @@ tags: []
 [^15]: fact:tankan-2026-10-01/n225.r1 +3.30%
 [^16]: fact:tankan-2026-10-01/topix.r1 +0.67%
 [^17]: fact:tankan-2026-10-01/us10y.r1 -5.6bp
+[^18]: fact:tankan-2026-07-01/large_mfg 22pt
+[^19]: fact:tankan-2026-07-01/large_nonmfg 37pt
+[^20]: fact:tankan-2026-07-01/n225.r1 +0.59%
+[^21]: fact:tankan-2026-07-01/topix.r1 +0.52%
+[^22]: fact:tankan-2026-07-01/us10y.r1 +5.7bp
 <!-- llm:end -->
