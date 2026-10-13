@@ -89,6 +89,7 @@ tags: []
 - 2026-08-21 [日本CPI 2026年7月分](../events/jpcpi/2026-08-21.md)
 - 2026-07-24 [日本CPI 2026年6月分](../events/jpcpi/2026-07-24.md)
 - 2026-06-19 [日本CPI 2026年5月分](../events/jpcpi/2026-06-19.md)
+- 2026-05-22 [日本CPI 2026年4月分](../events/jpcpi/2026-05-22.md)
 <!-- pup:end aggregates -->
 
 ## 傾向と記録
@@ -115,6 +116,9 @@ tags: []
 
 #### 2026-06-19 [日本CPI 2026年5月分](../events/jpcpi/2026-06-19.md)
 - コアは 1.4%[^35] で前月の 1.4%[^36] と同水準。1本目は日経平均 +0.28%[^37]、S&P 500 -0.37%[^38]、米10年金利 +5.8bp[^39]。
+
+#### 2026-05-22 [日本CPI 2026年4月分](../events/jpcpi/2026-05-22.md)
+- コアは 1.4%[^43] で前月の 1.8%[^44] から低下。1本目は日経平均 +2.68%[^45]、S&P 500 +0.37%[^46]、米10年金利 -2.8bp[^47]。
 
 [^1]: fact:type-jpcpi/jpcpi.all.n225.r1.mean -0.05%
 [^2]: fact:type-jpcpi/jpcpi.all.n225.r1.up_share 50%
@@ -158,4 +162,9 @@ tags: []
 [^40]: fact:type-jpcpi/jpcpi.core_flat.n225.r20.mean +0.81%
 [^41]: fact:type-jpcpi/jpcpi.core_flat.spx.r20.mean -0.11%
 [^42]: fact:type-jpcpi/jpcpi.core_flat.spx.r20.up_share 50%
+[^43]: fact:jpcpi-2026-05-22/core_yoy 1.4%
+[^44]: fact:jpcpi-2026-05-22/core_yoy_prev 1.8%
+[^45]: fact:jpcpi-2026-05-22/n225.r1 +2.68%
+[^46]: fact:jpcpi-2026-05-22/spx.r1 +0.37%
+[^47]: fact:jpcpi-2026-05-22/us10y.r1 -2.8bp
 <!-- llm:end -->
