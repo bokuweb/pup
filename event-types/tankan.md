@@ -87,6 +87,7 @@ tags: []
 
 - 2026-10-01 [日銀短観 2026年9月調査](../events/tankan/2026-10-01.md)
 - 2026-07-01 [日銀短観 2026年6月調査](../events/tankan/2026-07-01.md)
+- 2026-04-01 [日銀短観 2026年3月調査](../events/tankan/2026-04-01.md)
 <!-- pup:end aggregates -->
 
 ## 傾向と記録
@@ -98,6 +99,7 @@ tags: []
 - S&P 500 は1本目の平均が +0.04%[^7]、20本目の平均が +1.72%[^8] で、短観の直接の影響は小さい。
 - 大企業製造業DIが改善したときの S&P 500 の5本目の平均は +0.89%[^9]、上昇した割合は 76%[^10] と、全体より上方向に偏る。
 - 米10年金利は5本目の平均が +3.9bp[^11] で、上昇した割合は 60%[^12]。
+- 直前の VIX が 25 超のときは、日経平均の5本目の平均が +2.20%[^23]（上昇した割合 100%[^24]）、S&P 500 の20本目の平均が +7.22%[^25]（上昇した割合 83%[^26]）、VIX の20本目の平均が -5.74pt[^27] と、全体より大きく上向き・低下方向に振れる。
 
 ### 記録
 #### 2026-10-01 [日銀短観 2026年9月調査](../events/tankan/2026-10-01.md)
@@ -105,6 +107,9 @@ tags: []
 
 #### 2026-07-01 [日銀短観 2026年6月調査](../events/tankan/2026-07-01.md)
 - 大企業製造業DIは 22pt[^18]、非製造業DIは 37pt[^19]。1本目は日経平均が +0.59%[^20]、TOPIX（1306 ETF）が +0.52%[^21]、米10年金利が 5.7bp 上昇した[^22]。
+
+#### 2026-04-01 [日銀短観 2026年3月調査](../events/tankan/2026-04-01.md)
+- 大企業製造業DIは 17pt[^28]、非製造業DIは 36pt[^29]。1本目は日経平均が +5.24%[^30]、S&P 500 が +0.72%[^31]、米10年金利が 0.8bp 上昇した[^32]。
 
 [^1]: fact:type-tankan/tankan.all.n225.r1.mean +0.03%
 [^2]: fact:type-tankan/tankan.all.n225.r1.up_share 58%
@@ -128,4 +133,14 @@ tags: []
 [^20]: fact:tankan-2026-07-01/n225.r1 +0.59%
 [^21]: fact:tankan-2026-07-01/topix.r1 +0.52%
 [^22]: fact:tankan-2026-07-01/us10y.r1 +5.7bp
+[^23]: fact:type-tankan/tankan.vix_high.n225.r5.mean +2.20%
+[^24]: fact:type-tankan/tankan.vix_high.n225.r5.up_share 100%
+[^25]: fact:type-tankan/tankan.vix_high.spx.r20.mean +7.22%
+[^26]: fact:type-tankan/tankan.vix_high.spx.r20.up_share 83%
+[^27]: fact:type-tankan/tankan.vix_high.vix.r20.mean -5.74pt
+[^28]: fact:tankan-2026-04-01/large_mfg 17pt
+[^29]: fact:tankan-2026-04-01/large_nonmfg 36pt
+[^30]: fact:tankan-2026-04-01/n225.r1 +5.24%
+[^31]: fact:tankan-2026-04-01/spx.r1 +0.72%
+[^32]: fact:tankan-2026-04-01/us10y.r1 +0.8bp
 <!-- llm:end -->
