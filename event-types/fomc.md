@@ -89,6 +89,7 @@ tags: []
 - 2026-07-29 [FOMC 2026年7月29日（据え置き）](../events/fomc/2026-07-29.md)
 - 2026-06-17 [FOMC 2026年6月17日（据え置き）](../events/fomc/2026-06-17.md)
 - 2026-04-29 [FOMC 2026年4月29日（据え置き）](../events/fomc/2026-04-29.md)
+- 2026-03-18 [FOMC 2026年3月18日（据え置き）](../events/fomc/2026-03-18.md)
 <!-- pup:end aggregates -->
 
 ## 傾向と記録
@@ -115,6 +116,9 @@ tags: []
 
 #### 2026-04-29 [FOMC 2026年4月29日（据え置き）](../events/fomc/2026-04-29.md)
 - 政策金利を 3.50〜3.75%[^29] で据え置いた。1本目は S&P 500 -0.04%[^30]、日経平均 -1.06%[^31]、米10年金利 +6.4bp[^32]。
+
+#### 2026-03-18 [FOMC 2026年3月18日（据え置き）](../events/fomc/2026-03-18.md)
+- 政策金利を 3.50〜3.75%[^35] で据え置いた。1本目は S&P 500 -1.36%[^36]、日経平均 -3.38%[^37]、VIX +2.72pt[^38]。
 
 [^1]: fact:type-fomc/fomc.all.spx.r1.mean -0.14%
 [^2]: fact:type-fomc/fomc.all.spx.r1.up_share 43%
@@ -150,4 +154,8 @@ tags: []
 [^32]: fact:fomc-2026-04-29/us10y.r1 +6.4bp
 [^33]: fact:type-fomc/fomc.decision_hold.n225.r1.mean -0.26%
 [^34]: fact:type-fomc/fomc.decision_hold.n225.r1.up_share 45%
+[^35]: fact:fomc-2026-03-18/target_range 3.50〜3.75%
+[^36]: fact:fomc-2026-03-18/spx.r1 -1.36%
+[^37]: fact:fomc-2026-03-18/n225.r1 -3.38%
+[^38]: fact:fomc-2026-03-18/vix.r1 +2.72pt
 <!-- llm:end -->
