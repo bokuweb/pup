@@ -12,7 +12,7 @@ use anyhow::{Context, Result};
 use regex::Regex;
 use serde_json::Value;
 use std::cell::RefCell;
-use std::collections::{BTreeMap, HashSet};
+use std::collections::{BTreeMap, BTreeSet, HashSet};
 use std::rc::Rc;
 use std::sync::OnceLock;
 
@@ -239,6 +239,60 @@ pub fn implied_sign(after: &str) -> Option<i8> {
     }
 }
 
+/// Citations that passed the check on an earlier day: `scope/key` → the fact texts they matched.
+///
+/// Facts move after a page is written (aggregates change as events are added, BLS revises
+/// seasonally adjusted figures, a "previous release" fact changes when a missing release is
+/// filled in). A footnote verified on its day stays valid as a record of that day; only new
+/// citations must equal today's facts. Stored in the wiki as `.pup/cited.json`.
+#[derive(Debug, Default, serde::Serialize, serde::Deserialize)]
+pub struct Ledger {
+    pub cited: BTreeMap<String, BTreeSet<String>>,
+}
+
+impl Ledger {
+    fn path(wiki: &std::path::Path) -> std::path::PathBuf {
+        wiki.join(".pup").join("cited.json")
+    }
+
+    pub fn load(wiki: &std::path::Path) -> Option<Self> {
+        serde_json::from_slice(&std::fs::read(Self::path(wiki)).ok()?).ok()
+    }
+
+    pub fn save(&self, wiki: &std::path::Path) -> Result<()> {
+        let p = Self::path(wiki);
+        if let Some(d) = p.parent() {
+            std::fs::create_dir_all(d)?;
+        }
+        std::fs::write(p, serde_json::to_vec_pretty(self)?)?;
+        Ok(())
+    }
+
+    pub fn add(&mut self, scope: &str, key: &str, text: &str) {
+        self.cited
+            .entry(format!("{scope}/{key}"))
+            .or_default()
+            .insert(text.trim().to_string());
+    }
+
+    /// A recorded text for this citation that the footnote repeats.
+    pub fn known(&self, scope: &str, key: &str, rest: &str) -> Option<String> {
+        self.cited
+            .get(&format!("{scope}/{key}"))?
+            .iter()
+            .find(|t| rest.contains(t.as_str()))
+            .cloned()
+    }
+}
+
+/// `(scope, key, text)` of every footnote in an LLM block.
+pub fn footnotes(text: &str) -> Vec<(String, String, String)> {
+    text.lines()
+        .filter_map(|l| footnote_re().captures(l.trim()))
+        .map(|c| (c[1].to_string(), c[2].to_string(), c[3].trim().to_string()))
+        .collect()
+}
+
 pub fn footnote_re() -> &'static Regex {
     static RE: OnceLock<Regex> = OnceLock::new();
     RE.get_or_init(|| {
@@ -278,6 +332,7 @@ pub fn check_llm(
     facts: &Facts,
     scopes: &[String],
     _allowed: &Allowed,
+    ledger: &Ledger,
 ) -> Result<Vec<String>> {
     let mut errs = Vec::new();
     // Footnote label → the cited fact's text.
@@ -301,17 +356,23 @@ pub fn check_llm(
             ));
             continue;
         }
-        match facts.lookup(scope, key)? {
-            None => errs.push(format!("no fact `{scope}/{key}`: {l}")),
-            Some(f) if !rest.contains(&f.text) => errs.push(format!(
-                "footnote text must contain `{}` for `{scope}/{key}`: {l}",
-                f.text
-            )),
-            Some(f) => {
-                if notes.insert(label.clone(), f.text).is_some() {
+        let current = facts.lookup(scope, key)?;
+        let text = match &current {
+            Some(f) if rest.contains(&f.text) => Some(f.text.clone()),
+            // Verified on an earlier day; the fact has moved since.
+            _ => ledger.known(scope, key, rest),
+        };
+        match (text, current) {
+            (Some(t), _) => {
+                if notes.insert(label.clone(), t).is_some() {
                     errs.push(format!("footnote `[^{label}]` is defined twice"));
                 }
             }
+            (None, None) => errs.push(format!("no fact `{scope}/{key}`: {l}")),
+            (None, Some(f)) => errs.push(format!(
+                "footnote text must contain `{}` for `{scope}/{key}`: {l}",
+                f.text
+            )),
         }
     }
     for line in text.lines() {
@@ -394,6 +455,30 @@ mod tests {
                 (1, "25", "bp"),
                 (1, "254", "千人")
             ]
+        );
+    }
+
+    #[test]
+    fn ledger_accepts_only_recorded_texts() {
+        let mut l = Ledger::default();
+        l.add("type-boj", "boj.all.spx.r20.mean", "+1.85%");
+        // Verified when written; today's fact is +1.84%.
+        assert_eq!(
+            l.known("type-boj", "boj.all.spx.r20.mean", "+1.85%")
+                .as_deref(),
+            Some("+1.85%")
+        );
+        // A number never verified is not accepted, nor is another key.
+        assert_eq!(l.known("type-boj", "boj.all.spx.r20.mean", "+1.90%"), None);
+        assert_eq!(l.known("type-boj", "boj.all.spx.r5.mean", "+1.85%"), None);
+        let notes = footnotes("text\n[^3]: fact:type-boj/boj.all.spx.r20.mean +1.85%\n");
+        assert_eq!(
+            notes,
+            vec![(
+                "type-boj".into(),
+                "boj.all.spx.r20.mean".into(),
+                "+1.85%".into()
+            )]
         );
     }
 

@@ -1,6 +1,6 @@
 //! `pup wiki-check`: OKF frontmatter, relative links, and every number in LLM-written text.
 
-use super::facts::{check_llm, Facts};
+use super::facts::{check_llm, footnotes, Facts, Ledger};
 use super::*;
 use regex::Regex;
 
@@ -79,6 +79,9 @@ pub fn run(a: &Args) -> Result<()> {
         walk_md(&a.wiki)
     };
     let link_re = Regex::new(r"\]\(([^)\s]+)\)").unwrap();
+    let mut ledger = Ledger::load(&a.wiki).unwrap_or_default();
+    // Citations that match today's facts, recorded once every page passes.
+    let mut verified = Vec::new();
     let mut report = Vec::new();
     for path in &pages {
         let r = rel(&a.wiki, path);
@@ -115,8 +118,15 @@ pub fn run(a: &Args) -> Result<()> {
         }
         let sc = scopes(&facts, &page)?;
         let allowed = facts.allowed(&sc)?;
-        for e in check_llm(&llm, &facts, &sc, &allowed)? {
+        for e in check_llm(&llm, &facts, &sc, &allowed, &ledger)? {
             report.push(format!("- `{r}`: {e}"));
+        }
+        for (scope, key, rest) in footnotes(&llm) {
+            if let Some(f) = facts.lookup(&scope, &key)? {
+                if rest.contains(&f.text) {
+                    verified.push((scope, key, f.text));
+                }
+            }
         }
     }
     std::fs::create_dir_all(&a.work)?;
@@ -135,5 +145,9 @@ pub fn run(a: &Args) -> Result<()> {
     if !report.is_empty() {
         bail!("wiki-check: {} problems", report.len());
     }
+    for (scope, key, text) in verified {
+        ledger.add(&scope, &key, &text);
+    }
+    ledger.save(&a.wiki)?;
     Ok(())
 }
