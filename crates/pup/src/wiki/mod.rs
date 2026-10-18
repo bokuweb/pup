@@ -178,15 +178,24 @@ impl Source {
     pub fn get(&self, rel: &str) -> Result<Option<Value>> {
         match &self.client {
             Some(c) => {
+                // Pages answers 503 now and then under a burst of requests; retry with backoff.
                 let url = format!("{}/{rel}", self.base);
-                let resp = c.get(&url).send().with_context(|| format!("GET {url}"))?;
-                if resp.status() == reqwest::StatusCode::NOT_FOUND {
-                    return Ok(None);
+                let mut last = None;
+                for attempt in 0..5u32 {
+                    if attempt > 0 {
+                        std::thread::sleep(std::time::Duration::from_secs(2u64.pow(attempt)));
+                    }
+                    match c.get(&url).send() {
+                        Ok(r) if r.status() == reqwest::StatusCode::NOT_FOUND => return Ok(None),
+                        Ok(r) if r.status().is_success() => return Ok(Some(r.json()?)),
+                        Ok(r) if r.status().is_server_error() || r.status().as_u16() == 429 => {
+                            last = Some(anyhow::anyhow!("GET {url}: HTTP {}", r.status()));
+                        }
+                        Ok(r) => bail!("GET {url}: HTTP {}", r.status()),
+                        Err(e) => last = Some(anyhow::Error::new(e).context(format!("GET {url}"))),
+                    }
                 }
-                if !resp.status().is_success() {
-                    bail!("GET {url}: HTTP {}", resp.status());
-                }
-                Ok(Some(resp.json()?))
+                Err(last.unwrap_or_else(|| anyhow::anyhow!("GET {url} failed")))
             }
             None => {
                 let p = Path::new(&self.base).join(rel);

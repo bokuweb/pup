@@ -115,6 +115,7 @@ pub fn skeleton_market(id: &str) -> Page {
 pub fn run(a: &Args) -> Result<()> {
     let facts = Facts::new(Source::new(&a.base)?);
     let state = State::load(&a.wiki);
+    seed_ledger(&a.wiki)?;
     if a.work.exists() {
         std::fs::remove_dir_all(&a.work)?;
     }
@@ -268,4 +269,25 @@ pub fn run(a: &Args) -> Result<()> {
     }
     tracing::info!("wiki-plan: {} tasks", plan.tasks.len());
     Ok(())
+}
+
+/// Before the first run with a citation ledger, record every footnote already in the wiki: each
+/// passed the check on the day it was pushed.
+fn seed_ledger(wiki: &Path) -> Result<()> {
+    if super::facts::Ledger::load(wiki).is_some() || !wiki.exists() {
+        return Ok(());
+    }
+    let mut ledger = super::facts::Ledger::default();
+    for path in walk_md(wiki) {
+        if let Ok(page) = Page::read(&path) {
+            for (scope, key, text) in super::facts::footnotes(&page.llm()) {
+                ledger.add(&scope, &key, &text);
+            }
+        }
+    }
+    tracing::info!(
+        "wiki-plan: seeded the citation ledger ({} facts)",
+        ledger.cited.len()
+    );
+    ledger.save(wiki)
 }

@@ -61,6 +61,12 @@ and relative links. Matching a number against any fact on the page is too weak �
 about two hundred facts and a wrong number often equals one of them — so numbers are tied to their
 footnotes.
 
+Facts move after a page is written: aggregates change as events are added, BLS revises seasonally
+adjusted figures, and a "previous release" fact changes when a missing release is filled in. A
+footnote that passed the check is recorded in `.pup/cited.json` (scope/key → the text it matched),
+and later checks accept it as a record of that day; new citations must equal today's facts. The
+ledger was seeded from every footnote in the wiki when it was introduced.
+
 ## Cost
 
 A local trial with Sonnet 5.5 took 23 turns and about $0.90 for one event (the event page, the
