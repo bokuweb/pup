@@ -91,9 +91,13 @@ claude -p "\`.github/wiki-agent.md\` の指示に従い、\`.wiki-work/chunks/00
 - BOJ meetings carry only the date for now; the decision is published in PDFs and is not parsed yet.
 - BLS figures are the currently published (revised) values, not the first print. Retail sales,
   GDP and PCE are first prints, read from each release.
-- The BEA archive can lag the latest release by a few weeks; such a release appears once listed.
-- Without a FRED key, a US release appears once the Internet Archive has crawled the BLS archive
-  file, which can be a few days after the release. The Employment Situation releases delayed by the
+- The latest retail report and BEA releases are read from Census's current report and BEA's
+  current-releases page, since their archives lag by a month or weeks.
+- `pup collect` warns (`::warning` in Actions) when a monthly release type has had no new event for
+  45 days, so a source that keeps "succeeding" with old data is noticed.
+- Without a FRED key, past BLS release dates come from the Internet Archive's copies of the BLS
+  release files, and the latest ones (not crawled yet) from the BLS monthly release calendars, also
+  read through the Archive; a release appears once BLS data for its month exist. The Employment Situation releases delayed by the
   2025 shutdown are mapped to their reference months by hand.
 - Release-time conventions: FOMC times come from the statement; CPI/NFP are 08:30 New York; BOJ
   decisions are taken as 12:00 Tokyo (marked as approximate); ECB decisions are 13:45 Frankfurt

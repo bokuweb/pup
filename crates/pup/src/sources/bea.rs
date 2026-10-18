@@ -1,6 +1,6 @@
 //! US GDP advance estimates and the PCE price index (BEA): release lists from the bea.gov news
 //! archive by product, headline figures as first published from each release page.
-//! The archive can lag a few weeks behind the latest release.
+//! The archive lags the latest releases by weeks, so the current-releases page is read too.
 
 use crate::http;
 use crate::model::{Event, Fact, SourceRef};
@@ -63,6 +63,15 @@ fn archive(
                 break;
             }
         }
+    }
+    // The archive lags the latest releases by weeks; the current-releases page has them at once.
+    match http::get_text(client, &format!("{BASE}/news/current-releases")) {
+        Ok(html) => {
+            for r in archive_rows(&html) {
+                rows.entry(r.path.clone()).or_insert(r);
+            }
+        }
+        Err(e) => tracing::warn!("bea current releases: {e:#}"),
     }
     anyhow::ensure!(!rows.is_empty(), "empty BEA archive");
     Ok(rows

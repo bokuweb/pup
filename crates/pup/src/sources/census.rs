@@ -12,6 +12,8 @@ use std::collections::BTreeMap;
 use std::path::Path;
 
 const LIST: &str = "https://www.census.gov/retail/marts/historic_releases.html";
+/// The latest report, listed on the historic page only after the next one is out.
+const CURRENT: &str = "https://www.census.gov/retail/marts/www/marts_current.pdf";
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Release {
@@ -124,9 +126,41 @@ pub fn releases(
             Err(e) => tracing::warn!("retail {month}: {e:#}"),
         }
     }
+    match current(client) {
+        Ok(r) if !out.iter().any(|x| x.month == r.month) => out.push(r),
+        Ok(_) => {}
+        Err(e) => tracing::warn!("retail current report: {e:#}"),
+    }
     out.retain(|r| r.released >= since);
     out.sort_by_key(|r| r.released);
     Ok(out)
+}
+
+/// The latest report (not cached: the same URL serves next month's report later).
+fn current(client: &reqwest::blocking::Client) -> Result<Release> {
+    let pdf = http::get_bytes(client, CURRENT)?;
+    anyhow::ensure!(pdf.starts_with(b"%PDF"), "not a PDF (rejected?)");
+    let text = http::pdf_first_page(&pdf, false)?;
+    let (released, mom) = parse_report(&text).context("no date or headline")?;
+    let month = reference_month(&text).context("no reference month")?;
+    Ok(Release {
+        month,
+        released,
+        mom,
+        url: CURRENT.into(),
+    })
+}
+
+/// `ADVANCE MONTHLY SALES FOR RETAIL AND FOOD SERVICES, SEPTEMBER 2026` → `2026-09`.
+pub fn reference_month(text: &str) -> Option<String> {
+    let flat = Regex::new(r"\s+")
+        .unwrap()
+        .replace_all(text, " ")
+        .to_string();
+    let re = Regex::new(r"(?i)RETAIL AND FOOD SERVICES,? ([A-Z]+) (\d{4})").unwrap();
+    let c = re.captures(&flat)?;
+    let d = NaiveDate::parse_from_str(&format!("1 {} {}", &c[1], &c[2]), "%d %B %Y").ok()?;
+    Some(d.format("%Y-%m").to_string())
 }
 
 pub fn events(releases: &[Release]) -> Result<Vec<Event>> {
@@ -207,6 +241,14 @@ mod tests {
         let pct =
             "THURSDAY, December 14, 2023 were $705.7 billion, a decrease of 1.3% (±0.5 percent)";
         assert_eq!(parse_report(pct), Some((d("2023-12-14"), -1.3)));
+    }
+
+    #[test]
+    fn reads_reference_month() {
+        let t = "FOR RELEASE AT 8:30 AM EDT, THURSDAY, OCTOBER 15, 2026\n\nADVANCE MONTHLY SALES FOR RETAIL AND FOOD SERVICES, SEPTEMBER 2026\n";
+        assert_eq!(reference_month(t).as_deref(), Some("2026-09"));
+        let old = "ADVANCE MONTHLY SALES FOR RETAIL AND FOOD SERVICES\nJANUARY 2016\n";
+        assert_eq!(reference_month(old).as_deref(), Some("2016-01"));
     }
 
     #[test]

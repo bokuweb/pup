@@ -53,6 +53,20 @@ pub fn get_bytes(client: &reqwest::blocking::Client, url: &str) -> Result<Vec<u8
     Err(last.unwrap_or_else(|| anyhow::anyhow!("GET {url} failed")))
 }
 
+/// GET text that may be gzip-compressed without saying so: the Internet Archive's raw (`id_`)
+/// snapshots return the original gzip bytes with no `Content-Encoding`.
+pub fn get_text_gunzip(client: &reqwest::blocking::Client, url: &str) -> Result<String> {
+    let bytes = get_bytes(client, url)?;
+    if bytes.starts_with(&[0x1f, 0x8b]) {
+        let mut out = String::new();
+        std::io::Read::read_to_string(&mut flate2::read::GzDecoder::new(&bytes[..]), &mut out)
+            .with_context(|| format!("gunzip {url}"))?;
+        Ok(out)
+    } else {
+        Ok(String::from_utf8_lossy(&bytes).into_owned())
+    }
+}
+
 /// Text of a PDF's first page via poppler's `pdftotext` (`layout` keeps table rows on one line).
 pub fn pdf_first_page(pdf: &[u8], layout: bool) -> Result<String> {
     let dir = std::env::temp_dir().join(format!("pup-pdf-{}", std::process::id()));
