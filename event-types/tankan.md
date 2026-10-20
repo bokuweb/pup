@@ -89,19 +89,18 @@ tags: []
 - 2026-07-01 [日銀短観 2026年6月調査](../events/tankan/2026-07-01.md)
 - 2026-04-01 [日銀短観 2026年3月調査](../events/tankan/2026-04-01.md)
 - 2025-12-15 [日銀短観 2025年12月調査](../events/tankan/2025-12-15.md)
+- 2025-10-01 [日銀短観 2025年9月調査](../events/tankan/2025-10-01.md)
 <!-- pup:end aggregates -->
 
 ## 傾向と記録
 
 <!-- llm:begin -->
 ### 傾向のまとめ
-- 日経平均は短観後の1本目の平均が +0.03%[^1]、上昇した割合は 58%[^2] と小さな動きだが、5本目の平均は -0.49%[^3] と平均では下に傾く。一方で中央値は +0.18%[^4] で、平均は一部の大きな下落に引かれている可能性がある。
-- 20本目の日経平均は平均 +1.45%[^5]、上昇した割合は 62%[^6] と上向きに転じる。
-- S&P 500 は1本目の平均が +0.04%[^7]、20本目の平均が +1.72%[^8] で、短観の直接の影響は小さい。
-- 大企業製造業DIが改善したときの S&P 500 の5本目の平均は +0.89%[^9]、上昇した割合は 76%[^10] と、全体より上方向に偏る。
-- 米10年金利は5本目の平均が +3.9bp[^11] で、上昇した割合は 60%[^12]。
-- 直前の VIX が 25 超のときは、日経平均の5本目の平均が +2.20%[^23]（上昇した割合 100%[^24]）、S&P 500 の20本目の平均が +7.22%[^25]（上昇した割合 83%[^26]）、VIX の20本目の平均が -5.74pt[^27] と、全体より大きく上向き・低下方向に振れる。
-- 直前の VIX が 15〜25 のときは、日経平均の5本目の平均が -1.46%[^40]、上昇した割合は 36%[^41] と、全体より弱めに出る。
+- 日経平均は短観後の1本目の平均が +0.03%[^42]、上昇した割合は 58%[^43]、5本目の平均は -0.49%[^44]、20本目の平均は +1.45%[^45]（上昇した割合 62%[^46]）で、5本目に弱く20本目に上向く。
+- S&P 500 は1本目の平均が +0.04%[^47]、20本目の平均が +1.72%[^48] で、短観の直接の影響は小さい。
+- 大企業製造業DIが改善したときは、S&P 500 の5本目の平均が +0.89%[^49]（上昇した割合 76%[^50]）、20本目の平均が +2.00%[^51]（上昇した割合 75%[^52]）と全体より高め。一方、日経平均の1本目の平均は +0.21%[^53] だが、20本目の平均 +1.94%[^54] に対し上昇した割合は 50%[^55] にとどまる。
+- 米10年金利は全体で5本目の平均が +3.9bp[^56]、20本目の平均が +7.4bp[^57]。直前の VIX が 15〜25 のときは20本目の平均が +9.6bp[^58] とさらに大きい。
+- 直前の VIX が 15〜25 のときは、日経平均の5本目の平均が -1.46%[^59]、上昇した割合が 36%[^60] と全体より弱く、VIX の5本目の平均は +1.47pt[^61] と上昇方向に寄る。
 
 ### 記録
 #### 2026-10-01 [日銀短観 2026年9月調査](../events/tankan/2026-10-01.md)
@@ -115,6 +114,9 @@ tags: []
 
 #### 2025-12-15 [日銀短観 2025年12月調査](../events/tankan/2025-12-15.md)
 - 大企業製造業DIは 15pt[^33]、非製造業DIは 34pt[^34]。1本目は日経平均が -1.31%[^35]、TOPIX（1306 ETF）が +0.36%[^36]、米10年金利が -1.2bp[^37]。20本目は日経平均が +6.44%[^38]、S&P 500 が +2.00%[^39]。
+
+#### 2025-10-01 [日銀短観 2025年9月調査](../events/tankan/2025-10-01.md)
+- 大企業製造業DIは 14pt[^62]、非製造業DIは 34pt[^63]。1本目は日経平均が -0.85%[^64]、TOPIX（1306 ETF）が -1.16%[^65]、米10年金利が 4.2bp 低下した[^66]。20本目は日経平均が +14.19%[^67]、S&P 500 が +3.03%[^68]。
 
 [^1]: fact:type-tankan/tankan.all.n225.r1.mean +0.03%
 [^2]: fact:type-tankan/tankan.all.n225.r1.up_share 58%
@@ -157,4 +159,31 @@ tags: []
 [^39]: fact:tankan-2025-12-15/spx.r20 +2.00%
 [^40]: fact:type-tankan/tankan.vix_mid.n225.r5.mean -1.46%
 [^41]: fact:type-tankan/tankan.vix_mid.n225.r5.up_share 36%
+[^42]: fact:type-tankan/tankan.all.n225.r1.mean +0.03%
+[^43]: fact:type-tankan/tankan.all.n225.r1.up_share 58%
+[^44]: fact:type-tankan/tankan.all.n225.r5.mean -0.49%
+[^45]: fact:type-tankan/tankan.all.n225.r20.mean +1.45%
+[^46]: fact:type-tankan/tankan.all.n225.r20.up_share 62%
+[^47]: fact:type-tankan/tankan.all.spx.r1.mean +0.04%
+[^48]: fact:type-tankan/tankan.all.spx.r20.mean +1.72%
+[^49]: fact:type-tankan/tankan.mfg_up.spx.r5.mean +0.89%
+[^50]: fact:type-tankan/tankan.mfg_up.spx.r5.up_share 76%
+[^51]: fact:type-tankan/tankan.mfg_up.spx.r20.mean +2.00%
+[^52]: fact:type-tankan/tankan.mfg_up.spx.r20.up_share 75%
+[^53]: fact:type-tankan/tankan.mfg_up.n225.r1.mean +0.21%
+[^54]: fact:type-tankan/tankan.mfg_up.n225.r20.mean +1.94%
+[^55]: fact:type-tankan/tankan.mfg_up.n225.r20.up_share 50%
+[^56]: fact:type-tankan/tankan.all.us10y.r5.mean +3.9bp
+[^57]: fact:type-tankan/tankan.all.us10y.r20.mean +7.4bp
+[^58]: fact:type-tankan/tankan.vix_mid.us10y.r20.mean +9.6bp
+[^59]: fact:type-tankan/tankan.vix_mid.n225.r5.mean -1.46%
+[^60]: fact:type-tankan/tankan.vix_mid.n225.r5.up_share 36%
+[^61]: fact:type-tankan/tankan.vix_mid.vix.r5.mean +1.47pt
+[^62]: fact:tankan-2025-10-01/large_mfg 14pt
+[^63]: fact:tankan-2025-10-01/large_nonmfg 34pt
+[^64]: fact:tankan-2025-10-01/n225.r1 -0.85%
+[^65]: fact:tankan-2025-10-01/topix.r1 -1.16%
+[^66]: fact:tankan-2025-10-01/us10y.r1 -4.2bp
+[^67]: fact:tankan-2025-10-01/n225.r20 +14.19%
+[^68]: fact:tankan-2025-10-01/spx.r20 +3.03%
 <!-- llm:end -->
