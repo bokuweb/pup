@@ -47,12 +47,32 @@ fn fetch_span(
     out: &mut Monthly,
 ) -> Result<()> {
     let body = json!({"seriesid": [CPI_ALL, CPI_CORE, CPI_ALL_SA, CPI_CORE_SA, PAYROLLS, UNEMPLOYMENT, PPI_SA, PPI_NSA, OPENINGS], "startyear": from.to_string(), "endyear": to.to_string()});
-    let resp = client
-        .post("https://api.bls.gov/publicAPI/v1/timeseries/data/")
-        .json(&body)
-        .send()?
-        .error_for_status()?;
-    let v: Value = resp.json()?;
+    // The API answers 503 now and then; retry with backoff before giving up for the day.
+    let mut last = None;
+    let mut v = None;
+    for attempt in 0..4u32 {
+        if attempt > 0 {
+            std::thread::sleep(std::time::Duration::from_secs(5 * 2u64.pow(attempt)));
+        }
+        match client
+            .post("https://api.bls.gov/publicAPI/v1/timeseries/data/")
+            .json(&body)
+            .send()
+        {
+            Ok(r) if r.status().is_success() => {
+                v = Some(r.json::<Value>()?);
+                break;
+            }
+            Ok(r) if r.status().is_server_error() || r.status().as_u16() == 429 => {
+                last = Some(anyhow::anyhow!("BLS: HTTP {}", r.status()));
+            }
+            Ok(r) => anyhow::bail!("BLS: HTTP {}", r.status()),
+            Err(e) => last = Some(anyhow::Error::new(e).context("BLS request")),
+        }
+    }
+    let Some(v) = v else {
+        return Err(last.unwrap_or_else(|| anyhow::anyhow!("BLS request failed")));
+    };
     if v["status"] != "REQUEST_SUCCEEDED" {
         anyhow::bail!("BLS: {}", v["message"]);
     }
