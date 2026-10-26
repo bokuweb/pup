@@ -103,18 +103,20 @@ tags: []
 - 2025-06-20 [日本CPI 2025年5月分](../events/jpcpi/2025-06-20.md)
 - 2025-05-23 [日本CPI 2025年4月分](../events/jpcpi/2025-05-23.md)
 - 2025-04-18 [日本CPI 2025年3月分](../events/jpcpi/2025-04-18.md)
+- 2025-03-21 [日本CPI 2025年2月分](../events/jpcpi/2025-03-21.md)
 <!-- pup:end aggregates -->
 
 ## 傾向と記録
 
 <!-- llm:begin -->
 ### 傾向のまとめ
-- 日経平均は日本CPI後の1本目の平均が -0.05%[^91]（上昇した割合 50%[^92]）、5本目の平均が +0.14%[^93]、20本目の平均が +1.50%[^94] で、時間がたつほど上に寄る。
+- 日経平均は日本CPI後の1本目の平均が -0.05%[^91]（上昇した割合 50%[^92]）、5本目の平均が +0.14%[^93]、20本目の平均が +1.49%[^94] で、時間がたつほど上に寄る。
 - S&P 500 は5本目の平均が +0.18%[^95]、上昇した割合が 61%[^96] で、20本目の平均は +1.16%[^97]（上昇した割合 70%[^98]）。
 - コア前年比が前月から上昇したときは、日経平均の5本目の平均が -0.33%[^99]、20本目の平均が +0.16%[^100]、上昇した割合が 48%[^101] と、全体より弱い。
 - 同じ局面で VIX は5本目の平均が +0.24pt[^102]、20本目の平均が +0.71pt[^103] と上昇方向で、米10年金利の20本目の平均は +2.1bp[^104]、ドル円の20本目の平均は +0.28%[^105]。
-- コア前年比が前月から低下したときは、日経平均の5本目の平均が +0.66%[^9]、20本目の平均が +3.89%[^10]（上昇した割合 75%[^11]）と、上昇時より強く、VIX の5本目の平均は -0.68pt[^13] と低下方向に寄る。
+- コア前年比が前月から低下したときは、日経平均の5本目の平均が +0.66%[^9]、20本目の平均が +3.81%[^10]（上昇した割合 76%[^11]）と、上昇時より強く、VIX の5本目の平均は -0.68pt[^13] と低下方向に寄る。
 - 直前の VIX が 25 超のときは S&P 500 の20本目の平均が +4.07%[^159]、上昇した割合が 76%[^160] と上方向に偏り、VIX の20本目の平均は -5.99pt[^161] と低下方向に寄る。
+- 直前の VIX が 15〜25 のときは、S&P 500 の20本目の平均が +0.53%[^162]、上昇した割合が 67%[^163] で、日経平均の20本目の平均は +1.26%[^107]。
 
 ### 記録
 #### 2026-09-18 [日本CPI 2026年8月分](../events/jpcpi/2026-09-18.md)
@@ -171,17 +173,20 @@ tags: []
 #### 2025-04-18 [日本CPI 2025年3月分](../events/jpcpi/2025-04-18.md)
 - コアは 3.2%[^152] で前月の 3.0%[^153] から上昇。1本目は日経平均 +1.03%[^154]、S&P 500 -2.36%[^155]、米10年金利 +7.2bp[^156]。20本目は日経平均 +9.17%[^157]、S&P 500 +12.79%[^158]。
 
+#### 2025-03-21 [日本CPI 2025年2月分](../events/jpcpi/2025-03-21.md)
+- コアは 3.0%[^164] で前月の 3.2%[^165] から低下。1本目は日経平均 -0.20%[^166]、S&P 500 +0.08%[^167]、米10年金利 +1.9bp[^168]。20本目は日経平均 -8.94%[^169]、S&P 500 -6.71%[^170]。
+
 [^1]: fact:type-jpcpi/jpcpi.all.n225.r1.mean -0.05%
 [^2]: fact:type-jpcpi/jpcpi.all.n225.r1.up_share 50%
 [^3]: fact:type-jpcpi/jpcpi.all.n225.r5.mean +0.14%
-[^4]: fact:type-jpcpi/jpcpi.all.n225.r20.mean +1.50%
+[^4]: fact:type-jpcpi/jpcpi.all.n225.r20.mean +1.49%
 [^5]: fact:type-jpcpi/jpcpi.all.spx.r5.mean +0.18%
 [^6]: fact:type-jpcpi/jpcpi.all.spx.r5.up_share 61%
 [^7]: fact:type-jpcpi/jpcpi.all.spx.r20.mean +1.16%
 [^8]: fact:type-jpcpi/jpcpi.core_down.n225.r1.mean -0.14%
 [^9]: fact:type-jpcpi/jpcpi.core_down.n225.r5.mean +0.66%
-[^10]: fact:type-jpcpi/jpcpi.core_down.n225.r20.mean +3.89%
-[^11]: fact:type-jpcpi/jpcpi.core_down.n225.r20.up_share 75%
+[^10]: fact:type-jpcpi/jpcpi.core_down.n225.r20.mean +3.81%
+[^11]: fact:type-jpcpi/jpcpi.core_down.n225.r20.up_share 76%
 [^12]: fact:type-jpcpi/jpcpi.core_down.vix.r1.mean -0.37pt
 [^13]: fact:type-jpcpi/jpcpi.core_down.vix.r5.mean -0.68pt
 [^14]: fact:type-jpcpi/jpcpi.core_down.vix.r5.up_share 32%
@@ -264,7 +269,7 @@ tags: []
 [^91]: fact:type-jpcpi/jpcpi.all.n225.r1.mean -0.05%
 [^92]: fact:type-jpcpi/jpcpi.all.n225.r1.up_share 50%
 [^93]: fact:type-jpcpi/jpcpi.all.n225.r5.mean +0.14%
-[^94]: fact:type-jpcpi/jpcpi.all.n225.r20.mean +1.50%
+[^94]: fact:type-jpcpi/jpcpi.all.n225.r20.mean +1.49%
 [^95]: fact:type-jpcpi/jpcpi.all.spx.r5.mean +0.18%
 [^96]: fact:type-jpcpi/jpcpi.all.spx.r5.up_share 61%
 [^97]: fact:type-jpcpi/jpcpi.all.spx.r20.mean +1.16%
@@ -332,4 +337,13 @@ tags: []
 [^159]: fact:type-jpcpi/jpcpi.vix_high.spx.r20.mean +4.07%
 [^160]: fact:type-jpcpi/jpcpi.vix_high.spx.r20.up_share 76%
 [^161]: fact:type-jpcpi/jpcpi.vix_high.vix.r20.mean -5.99pt
+[^162]: fact:type-jpcpi/jpcpi.vix_mid.spx.r20.mean +0.53%
+[^163]: fact:type-jpcpi/jpcpi.vix_mid.spx.r20.up_share 67%
+[^164]: fact:jpcpi-2025-03-21/core_yoy 3.0%
+[^165]: fact:jpcpi-2025-03-21/core_yoy_prev 3.2%
+[^166]: fact:jpcpi-2025-03-21/n225.r1 -0.20%
+[^167]: fact:jpcpi-2025-03-21/spx.r1 +0.08%
+[^168]: fact:jpcpi-2025-03-21/us10y.r1 +1.9bp
+[^169]: fact:jpcpi-2025-03-21/n225.r20 -8.94%
+[^170]: fact:jpcpi-2025-03-21/spx.r20 -6.71%
 <!-- llm:end -->
