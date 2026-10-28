@@ -105,6 +105,7 @@ tags: ["CPI"]
 - 2025-04-10 [米CPI 2025年4月10日（2025年3月分）](../events/cpi/2025-04-10.md)
 - 2025-03-12 [米CPI 2025年3月12日（2025年2月分）](../events/cpi/2025-03-12.md)
 - 2025-02-12 [米CPI 2025年2月12日（2025年1月分）](../events/cpi/2025-02-12.md)
+- 2025-01-15 [米CPI 2025年1月15日（2024年12月分）](../events/cpi/2025-01-15.md)
 <!-- pup:end aggregates -->
 
 ## 傾向と記録
@@ -180,9 +181,12 @@ tags: ["CPI"]
 #### 2025-02-12 [米CPI 2025年2月12日（2025年1月分）](../events/cpi/2025-02-12.md)
 - CPI は前年比 3.0%[^191]（前月は 2.9%[^192]）、コアは 3.3%[^193]。1本目は S&P 500 が -0.27%[^194]、VIX が -0.13pt[^195]、日経平均が +1.28%[^196]。20本目は S&P 500 が -7.73%[^197]、米10年金利が -21.9bp[^198]。
 
+#### 2025-01-15 [米CPI 2025年1月15日（2024年12月分）](../events/cpi/2025-01-15.md)
+- CPI は前年比 2.9%[^199]（前月は 2.7%[^200]）、コアは 3.2%[^201]。1本目は S&P 500 が +1.83%[^202]、VIX が -2.59pt[^203]、米10年金利が -13.5bp[^204]。20本目は S&P 500 が +3.58%[^205]、米10年金利が -15.1bp[^206]。
+
 [^1]: fact:type-cpi/cpi.all.spx.r1.mean +0.03%
 [^2]: fact:type-cpi/cpi.all.spx.r1.up_share 56%
-[^3]: fact:type-cpi/cpi.all.spx.r5.mean +0.32%
+[^3]: fact:type-cpi/cpi.all.spx.r5.mean +0.31%
 [^4]: fact:type-cpi/cpi.all.spx.r5.up_share 66%
 [^5]: fact:type-cpi/cpi.all.spx.r20.median +1.76%
 [^6]: fact:type-cpi/cpi.all.spx.r20.mean +0.90%
@@ -258,8 +262,8 @@ tags: ["CPI"]
 [^76]: fact:cpi-2026-01-13/us10y.r1 -1.6bp
 [^77]: fact:cpi-2026-01-13/spx.r20 -0.51%
 [^78]: fact:cpi-2026-01-13/us10y.r20 -4.0bp
-[^79]: fact:type-cpi/cpi.all.n225.r5.mean +0.48%
-[^80]: fact:type-cpi/cpi.all.n225.r5.up_share 61%
+[^79]: fact:type-cpi/cpi.all.n225.r5.mean +0.44%
+[^80]: fact:type-cpi/cpi.all.n225.r5.up_share 60%
 [^81]: fact:type-cpi/cpi.all.n225.r20.mean +1.11%
 [^82]: fact:cpi-2025-12-18/cpi_yoy 2.7%
 [^83]: fact:cpi-2025-12-18/core_yoy 2.6%
@@ -378,4 +382,12 @@ tags: ["CPI"]
 [^196]: fact:cpi-2025-02-12/n225.r1 +1.28%
 [^197]: fact:cpi-2025-02-12/spx.r20 -7.73%
 [^198]: fact:cpi-2025-02-12/us10y.r20 -21.9bp
+[^199]: fact:cpi-2025-01-15/cpi_yoy 2.9%
+[^200]: fact:cpi-2025-01-15/cpi_yoy_prev 2.7%
+[^201]: fact:cpi-2025-01-15/core_yoy 3.2%
+[^202]: fact:cpi-2025-01-15/spx.r1 +1.83%
+[^203]: fact:cpi-2025-01-15/vix.r1 -2.59pt
+[^204]: fact:cpi-2025-01-15/us10y.r1 -13.5bp
+[^205]: fact:cpi-2025-01-15/spx.r20 +3.58%
+[^206]: fact:cpi-2025-01-15/us10y.r20 -15.1bp
 <!-- llm:end -->

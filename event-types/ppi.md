@@ -105,6 +105,7 @@ tags: ["PPI"]
 - 2025-04-11 [米PPI 2025年4月11日（2025年3月分）](../events/ppi/2025-04-11.md)
 - 2025-03-13 [米PPI 2025年3月13日（2025年2月分）](../events/ppi/2025-03-13.md)
 - 2025-02-13 [米PPI 2025年2月13日（2025年1月分）](../events/ppi/2025-02-13.md)
+- 2025-01-14 [米PPI 2025年1月14日（2024年12月分）](../events/ppi/2025-01-14.md)
 <!-- pup:end aggregates -->
 
 ## 傾向と記録
@@ -114,7 +115,7 @@ tags: ["PPI"]
 - S&P 500 の発表後1本目の平均は -0.03%[^53] で、上昇した割合は 53%[^54]。5本目の平均は +0.13%[^55]、20本目の平均は +1.02%[^56] で、上昇した割合は 68%[^57]。
 - 前月比がプラスのときの S&P 500 は、20本目の平均が +0.75%[^58]、上昇した割合が 66%[^59] と、全体よりやや低い。前月比がマイナスのときは1本目の平均が -0.34%[^85] だが上昇した割合は 58%[^86]、20本目の平均は +1.65%[^87] と、全体より高い。
 - 米10年金利の1本目の平均は -0.7bp[^60] で、上昇した割合は 42%[^61]。20本目の平均は +1.7bp[^62] と小さい。
-- 日経平均の5本目の平均は +0.30%[^65]、20本目の平均は +1.13%[^66] と、時間がたつほど上向きに偏る。
+- 日経平均の5本目の平均は +0.28%[^65]、20本目の平均は +1.13%[^66] と、時間がたつほど上向きに偏る。
 - VIX の1本目の平均は +0.23pt[^63] で、直前の VIX が 15〜25 のときの20本目の平均は -0.31pt[^64]、前月比がマイナスのときの20本目の平均は -1.96pt[^88]。
 - 直前の VIX が 15 未満のときは、S&P 500 の1本目の上昇割合が 64%[^17] と高く、VIX の20本目の平均は +2.84pt[^18] と上向く。
 - 直前の VIX が 25 超のときは、S&P 500 の1本目の平均が -0.57%[^123] と弱いが、20本目の平均は +3.11%[^124]、上昇した割合は 82%[^125] と高く、VIX の20本目の平均は -5.62pt[^126] と下がる。
@@ -180,16 +181,19 @@ tags: ["PPI"]
 #### 2025-02-13 [米PPI 2025年2月13日（2025年1月分）](../events/ppi/2025-02-13.md)
 - 前月比 +0.6%[^139]（前年比 3.8%[^140]）。1本目は S&P 500 が +1.04%[^141]、日経平均が -0.79%[^142]、米10年金利が -11.2bp[^143]。20本目は S&P 500 が -8.76%[^144]、米10年金利が -36.3bp[^145]。
 
-[^1]: fact:type-ppi/ppi.all.spx.r1.mean -0.04%
+#### 2025-01-14 [米PPI 2025年1月14日（2024年12月分）](../events/ppi/2025-01-14.md)
+- 前月比 +0.4%[^146]（前年比 3.5%[^147]）。1本目は S&P 500 が +0.11%[^148]、日経平均が -0.08%[^149]、米10年金利が -1.5bp[^150]。20本目は S&P 500 が +3.98%[^151]、米10年金利が -26.6bp[^152]。
+
+[^1]: fact:type-ppi/ppi.all.spx.r1.mean -0.03%
 [^2]: fact:type-ppi/ppi.all.spx.r1.up_share 53%
 [^3]: fact:type-ppi/ppi.all.spx.r5.mean +0.13%
 [^4]: fact:type-ppi/ppi.all.spx.r5.up_share 58%
-[^5]: fact:type-ppi/ppi.all.n225.r5.mean +0.30%
-[^6]: fact:type-ppi/ppi.all.n225.r5.up_share 58%
-[^7]: fact:type-ppi/ppi.all.us10y.r1.mean -0.6bp
+[^5]: fact:type-ppi/ppi.all.n225.r5.mean +0.28%
+[^6]: fact:type-ppi/ppi.all.n225.r5.up_share 57%
+[^7]: fact:type-ppi/ppi.all.us10y.r1.mean -0.7bp
 [^8]: fact:type-ppi/ppi.all.us10y.r1.up_share 42%
-[^9]: fact:type-ppi/ppi.ppi_up.us10y.r1.mean -0.3bp
-[^10]: fact:type-ppi/ppi.all.vix.r1.mean +0.24pt
+[^9]: fact:type-ppi/ppi.ppi_up.us10y.r1.mean -0.4bp
+[^10]: fact:type-ppi/ppi.all.vix.r1.mean +0.23pt
 [^11]: fact:type-ppi/ppi.all.vix.r1.up_share 48%
 [^12]: fact:type-ppi/ppi.all.vix.r5.mean +0.12pt
 [^13]: fact:ppi-2026-09-10/ppi_mom +0.5%
@@ -244,7 +248,7 @@ tags: ["PPI"]
 [^62]: fact:type-ppi/ppi.all.us10y.r20.mean +1.7bp
 [^63]: fact:type-ppi/ppi.all.vix.r1.mean +0.23pt
 [^64]: fact:type-ppi/ppi.vix_mid.vix.r20.mean -0.31pt
-[^65]: fact:type-ppi/ppi.all.n225.r5.mean +0.30%
+[^65]: fact:type-ppi/ppi.all.n225.r5.mean +0.28%
 [^66]: fact:type-ppi/ppi.all.n225.r20.mean +1.13%
 [^67]: fact:ppi-2026-01-30/ppi_mom +0.4%
 [^68]: fact:ppi-2026-01-30/spx.r1 -0.43%
@@ -325,4 +329,11 @@ tags: ["PPI"]
 [^143]: fact:ppi-2025-02-13/us10y.r1 -11.2bp
 [^144]: fact:ppi-2025-02-13/spx.r20 -8.76%
 [^145]: fact:ppi-2025-02-13/us10y.r20 -36.3bp
+[^146]: fact:ppi-2025-01-14/ppi_mom +0.4%
+[^147]: fact:ppi-2025-01-14/ppi_yoy 3.5%
+[^148]: fact:ppi-2025-01-14/spx.r1 +0.11%
+[^149]: fact:ppi-2025-01-14/n225.r1 -0.08%
+[^150]: fact:ppi-2025-01-14/us10y.r1 -1.5bp
+[^151]: fact:ppi-2025-01-14/spx.r20 +3.98%
+[^152]: fact:ppi-2025-01-14/us10y.r20 -26.6bp
 <!-- llm:end -->
