@@ -92,17 +92,18 @@ tags: []
 - 2025-10-01 [日銀短観 2025年9月調査](../events/tankan/2025-10-01.md)
 - 2025-07-01 [日銀短観 2025年6月調査](../events/tankan/2025-07-01.md)
 - 2025-04-01 [日銀短観 2025年3月調査](../events/tankan/2025-04-01.md)
+- 2024-12-13 [日銀短観 2024年12月調査](../events/tankan/2024-12-13.md)
 <!-- pup:end aggregates -->
 
 ## 傾向と記録
 
 <!-- llm:begin -->
 ### 傾向のまとめ
-- 日経平均は短観後の1本目の平均が +0.03%[^42]、上昇した割合は 58%[^43]、5本目の平均は -0.49%[^44]、20本目の平均は +1.45%[^45]（上昇した割合 62%[^46]）で、5本目に弱く20本目に上向く。
-- S&P 500 は1本目の平均が +0.04%[^47]、20本目の平均が +1.72%[^48] で、短観の直接の影響は小さい。
-- 大企業製造業DIが改善したときは、S&P 500 の5本目の平均が +0.89%[^49]（上昇した割合 76%[^50]）、20本目の平均が +2.00%[^51]（上昇した割合 75%[^52]）と全体より高め。一方、日経平均の1本目の平均は +0.21%[^53] だが、20本目の平均 +1.94%[^54] に対し上昇した割合は 50%[^55] にとどまる。
-- 米10年金利は全体で5本目の平均が +3.9bp[^56]、20本目の平均が +7.4bp[^57]。直前の VIX が 15〜25 のときは20本目の平均が +9.6bp[^58] とさらに大きい。
-- 直前の VIX が 15〜25 のときは、日経平均の5本目の平均が -1.46%[^59]、上昇した割合が 36%[^60] と全体より弱く、VIX の5本目の平均は +1.47pt[^61] と上昇方向に寄る。
+- 日経平均は短観後の1本目の平均が +0.03%[^84]、上昇した割合は 58%[^85]、5本目の平均は -0.49%[^86]、20本目の平均は +1.45%[^87]（上昇した割合 62%[^88]）で、5本目に弱く20本目に上向く。
+- S&P 500 は1本目の平均が +0.04%[^89]、20本目の平均が +1.71%[^90]（上昇した割合 70%[^91]）で、短観の直接の影響は小さい。
+- 大企業製造業DIが改善したときは、S&P 500 の5本目の平均が +0.89%[^92]（上昇した割合 76%[^93]）、20本目の平均が +1.96%[^94]（上昇した割合 76%[^95]）と全体より高め。一方、日経平均の1本目の平均は +0.21%[^96] だが、20本目の平均 +1.94%[^97] に対し上昇した割合は 50%[^98] にとどまる。
+- 米10年金利は全体で5本目の平均が +3.9bp[^99]、20本目の平均が +6.7bp[^100]。直前の VIX が 15 未満のときは1本目の平均が +2.1bp[^101]、上昇した割合が 80%[^102] と上昇に偏る。
+- 直前の VIX が 15 未満のときは、VIX の5本目の平均が +1.08pt[^103]、20本目の平均が +1.50pt[^104]（上昇した割合 67%[^105]）と上昇方向に寄る。
 
 ### 記録
 #### 2026-10-01 [日銀短観 2026年9月調査](../events/tankan/2026-10-01.md)
@@ -125,6 +126,9 @@ tags: []
 
 #### 2025-04-01 [日銀短観 2025年3月調査](../events/tankan/2025-04-01.md)
 - 大企業製造業DIは 12pt[^76]、非製造業DIは 35pt[^77]。1本目は日経平均が +0.02%[^78]、TOPIX（1306 ETF）が -0.07%[^79]、米10年金利が 9.0bp 低下した[^80]。5本目は日経平均が -12.58%[^81] と大きく下落した。20本目は日経平均が +0.62%[^82]、S&P 500 が -0.91%[^83]。
+
+#### 2024-12-13 [日銀短観 2024年12月調査](../events/tankan/2024-12-13.md)
+- 大企業製造業DIは 14pt[^106]、非製造業DIは 33pt[^107]。1本目は日経平均が -0.95%[^108]、TOPIX（1306 ETF）が -0.88%[^109]、米10年金利が +7.5bp[^110]。20本目は日経平均が -3.20%[^111]、S&P 500 が -3.44%[^112]。
 
 [^1]: fact:type-tankan/tankan.all.n225.r1.mean +0.03%
 [^2]: fact:type-tankan/tankan.all.n225.r1.up_share 58%
@@ -209,4 +213,33 @@ tags: []
 [^81]: fact:tankan-2025-04-01/n225.r5 -12.58%
 [^82]: fact:tankan-2025-04-01/n225.r20 +0.62%
 [^83]: fact:tankan-2025-04-01/spx.r20 -0.91%
+[^84]: fact:type-tankan/tankan.all.n225.r1.mean +0.03%
+[^85]: fact:type-tankan/tankan.all.n225.r1.up_share 58%
+[^86]: fact:type-tankan/tankan.all.n225.r5.mean -0.49%
+[^87]: fact:type-tankan/tankan.all.n225.r20.mean +1.45%
+[^88]: fact:type-tankan/tankan.all.n225.r20.up_share 62%
+[^89]: fact:type-tankan/tankan.all.spx.r1.mean +0.04%
+[^90]: fact:type-tankan/tankan.all.spx.r20.mean +1.71%
+[^91]: fact:type-tankan/tankan.all.spx.r20.up_share 70%
+[^92]: fact:type-tankan/tankan.mfg_up.spx.r5.mean +0.89%
+[^93]: fact:type-tankan/tankan.mfg_up.spx.r5.up_share 76%
+[^94]: fact:type-tankan/tankan.mfg_up.spx.r20.mean +1.96%
+[^95]: fact:type-tankan/tankan.mfg_up.spx.r20.up_share 76%
+[^96]: fact:type-tankan/tankan.mfg_up.n225.r1.mean +0.21%
+[^97]: fact:type-tankan/tankan.mfg_up.n225.r20.mean +1.94%
+[^98]: fact:type-tankan/tankan.mfg_up.n225.r20.up_share 50%
+[^99]: fact:type-tankan/tankan.all.us10y.r5.mean +3.9bp
+[^100]: fact:type-tankan/tankan.all.us10y.r20.mean +6.7bp
+[^101]: fact:type-tankan/tankan.vix_low.us10y.r1.mean +2.1bp
+[^102]: fact:type-tankan/tankan.vix_low.us10y.r1.up_share 80%
+[^103]: fact:type-tankan/tankan.vix_low.vix.r5.mean +1.08pt
+[^104]: fact:type-tankan/tankan.vix_low.vix.r20.mean +1.50pt
+[^105]: fact:type-tankan/tankan.vix_low.vix.r20.up_share 67%
+[^106]: fact:tankan-2024-12-13/large_mfg 14pt
+[^107]: fact:tankan-2024-12-13/large_nonmfg 33pt
+[^108]: fact:tankan-2024-12-13/n225.r1 -0.95%
+[^109]: fact:tankan-2024-12-13/topix.r1 -0.88%
+[^110]: fact:tankan-2024-12-13/us10y.r1 +7.5bp
+[^111]: fact:tankan-2024-12-13/n225.r20 -3.20%
+[^112]: fact:tankan-2024-12-13/spx.r20 -3.44%
 <!-- llm:end -->
